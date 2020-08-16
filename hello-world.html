@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+  </head>
+  <body>
+    <h1>Hello world!</h1>
+    <h2>This HTML document contains all our starting libraries.</h2>
+    <h3>As you can see the behaviour and styling of this text has been altered by Bootstrap's css.</h3>
+    Let's start the breakdown.
+    <hr class="bg-info p-1">
+    <div class="container-fluid p-3 mt-3 bg-light">
+      <h2>Below is a Bootstrap CSS container with one three-column row</h2>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm bg-info border rounded-lg p-3 text-white">
+          This is column one.
+        </div>
+        <div class="col-sm bg-warning border rounded-lg p-3 text-white">
+          This is column two.
+        </div>
+        <div class="col-sm bg-danger border rounded-lg p-3 text-white">
+          This is column three.
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid p-3 mt-3 bg-light">
+      <h2>Now let's start using some more interactive stuff.
+        The best way to do this using Vue.js is with BootstrapVue.
+        Here are some components:</h2>
+    </div>
+    <div id="app">
+      <b-button class="">Click me!</b-button>
+       <b-button variant="outline-primary">No, click me!</b-button>
+    </div>
+    <script src="libs/heatmap.js/build/heatmap.min.js" charset="utf-8"></script>
+    <!--<script src="https://unpkg.com/vue/dist/vue.min.js"></script> !-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="main.js" charset="utf-8"></script>
+  </body>
+</html>
