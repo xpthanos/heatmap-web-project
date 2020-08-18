@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+  </head>
+  <body>
+    <div id="app">
+      <div class="fixed-bottom fixed-top" style="background-color: #75cdff; overflow: scroll">
+        <div class="fixed-bottom fixed-top" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
+          <div style="margin: auto; margin-top: -20px; height: 500; width: 300px; background-color: #ffffff; outline: 2px solid black;">
+            <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
+          </div>
+          <div style="margin: auto; position:relative; top: 200px; left:550px; padding: 25px; height: 500; width: 300px; background-color: #ffffff;">
+            <b-col>
+              <b-row class="pb-1" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
+              <b-row class="pb-1" ><b-form-input type="email" placeholder="E-mail" ></b-form-input></b-row>
+              <b-row class="pb-1" ><b-form-input type="password" placeholder="Password">></b-form-input></b-row>
+              <b-row class="pb-1"><b-button block variant="primary">Log in</b-button></b-row>
+              <b-row class="pb-1"><a href="" style="margin: auto;">Sign up</a></b-row>
+            </b-col>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <script src="libs/heatmap.js/build/heatmap.min.js" charset="utf-8"></script>
+    <!--<script src="https://unpkg.com/vue/dist/vue.min.js"></script> !-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="home.js" charset="utf-8"></script>
+  </body>
+</html>
