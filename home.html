@@ -11,25 +11,45 @@
    crossorigin=""/>
   </head>
   <body>
-    <div id="app">
-      <div class="fixed-bottom fixed-top" style="background-color: #75cdff; overflow: scroll">
-        <div class="fixed-bottom fixed-top" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
-          <div style="margin: auto; margin-top: -20px; height: 500; width: 300px; background-color: #ffffff; outline: 2px solid black;">
-            <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
-          </div>
-          <div style="margin: auto; position:relative; top: 200px; left:550px; padding: 25px; height: 500; width: 300px; background-color: #ffffff;">
-            <b-col>
-              <b-row class="pb-1" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
-              <b-row class="pb-1" ><b-form-input type="email" placeholder="E-mail" ></b-form-input></b-row>
-              <b-row class="pb-1" ><b-form-input type="password" placeholder="Password">></b-form-input></b-row>
-              <b-row class="pb-1"><b-button block variant="primary">Log in</b-button></b-row>
-              <b-row class="pb-1"><a href="" style="margin: auto;">Sign up</a></b-row>
-            </b-col>
-          </div>
-        </div>
+    <!--Background-->
+    <div class="fixed-bottom fixed-top" style="background-color: #75cdff;">
+      <!--Loader-->
+      <div id="loader" class="fixed-bottom fixed-top" style="background-color: #75cdff;">
+        <b-spinner class="margin:auto" label="Loading..." style="margin: auto;"></b-spinner></div>
       </div>
-
+      <!--Main App-->
+      <div id="app" style="visibility: hidden;">
+          <!--Background Image-->
+          <div class="fixed-bottom fixed-top" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
+            <!--Logo Box-->
+            <div style="margin: auto; margin-top: -20px; height: 500; width: 300px; background-color: #ffffff; ">
+              <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;" class="img-fluid animated fadeInUp"></b-row>
+            </div>
+            <!--Log In Box-->
+            <b-container style="position: absolute; top: 50%; left: 50%; -moz-transform: translateX(-50%) translateY(-50%); -webkit-transform: translateX(-50%) translateY(-50%); transform: translateX(-50%) translateY(-50%); padding: 25px; height: 500; width: 300px; background-color: #ffffff;">
+              <b-form @submit="onSumbit">
+                <b-col>
+                  <b-row class="pt-2 pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
+                  <b-row class="pb-1" ><b-form-input type="email" placeholder="E-mail" ></b-form-input></b-row>
+                  <b-row class="pb-1" ><b-form-input type="password" placeholder="Password">></b-form-input></b-row>
+                  <b-row class="pb-1"><b-button block variant="primary" onclick="myFunction()" >Log in</b-button></b-row>
+                </b-col>
+              <b-form>
+              <b-row class="pt-4"><b-link v-b-modal.signup style="margin: auto;">Sign up</b-link></b-row>
+            </b-container>
+          </div>
+        <!--Signup Modal Window-->
+        <b-modal id="signup" title="Sign up">
+          <b-form @submit="onSumbit">
+            <b-form-group id="signup-form" label-for="username" description="e.x. Ioanna Gogou">
+              <b-form-input id="name" v-model="text" type="email" required placeholder="Name"></b-form-input>
+              <b-form-input id="lastname" v-model="text" type="email" required placeholder="Last Name"></b-form-input>
+            </b-form-group>
+          </b-form>
+        </b-modal>
+      </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="libs/heatmap.js/build/heatmap.min.js" charset="utf-8"></script>
     <!--<script src="https://unpkg.com/vue/dist/vue.min.js"></script> !-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
