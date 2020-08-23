@@ -14,8 +14,8 @@
     <!--Background-->
     <div class="fixed-bottom fixed-top" style="background-color: #75cdff;">
       <!--Loader-->
-      <div id="loader" class="fixed-bottom fixed-top" style="background-color: #75cdff;">
-        <b-spinner class="margin:auto" label="Loading..." style="margin: auto;"></b-spinner></div>
+      <div id="loader" class="fixed-bottom fixed-top" style="background-color: #75cdff; ">
+        <b-spinner class="margin:auto" label="Loading..." style="position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%);"></b-spinner></div>
       </div>
       <!--Main App-->
       <div id="app" style="visibility: hidden;">
@@ -23,35 +23,47 @@
           <div class="fixed-bottom fixed-top" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
             <!--Logo Box-->
             <div style="margin: auto; margin-top: -20px; height: 500; width: 300px; background-color: #ffffff; ">
-              <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;" class="img-fluid animated fadeInUp"></b-row>
+              <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
             </div>
             <!--Log In Box-->
-            <b-container style="position: absolute; top: 50%; left: 50%; -moz-transform: translateX(-50%) translateY(-50%); -webkit-transform: translateX(-50%) translateY(-50%); transform: translateX(-50%) translateY(-50%); padding: 25px; height: 500; width: 300px; background-color: #ffffff;">
-              <b-form @submit="onSumbit">
+            <b-container style="position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%); padding: 25px; height: 500; width: 300px; background-color: #ffffff;">
+              <b-form>
                 <b-col>
-                  <b-row class="pt-2 pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
-                  <b-row class="pb-1" ><b-form-input type="email" placeholder="E-mail" ></b-form-input></b-row>
-                  <b-row class="pb-1" ><b-form-input type="password" placeholder="Password">></b-form-input></b-row>
+                  <b-row class="pt-1 pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
+                  <b-row class="pb-1" ><b-form-input id="login-email" type="email" required placeholder="E-mail" ></b-form-input></b-row>
+                  <b-row class="pb-1" ><b-form-input id="login-password" type="password" required placeholder="Password">></b-form-input></b-row>
                   <b-row class="pb-1"><b-button block variant="primary" onclick="myFunction()" >Log in</b-button></b-row>
                 </b-col>
-              <b-form>
-              <b-row class="pt-4"><b-link v-b-modal.signup style="margin: auto;">Sign up</b-link></b-row>
+              </b-form>
+                <hr/>
+              <b-row><b-link v-b-modal.signup style="margin: auto;">Sign up</b-link></b-row>
             </b-container>
           </div>
         <!--Signup Modal Window-->
-        <b-modal id="signup" title="Sign up">
-          <b-form @submit="onSumbit">
-            <b-form-group id="signup-form" label-for="username" description="e.x. Ioanna Gogou">
-              <b-form-input id="name" v-model="text" type="email" required placeholder="Name"></b-form-input>
-              <b-form-input id="lastname" v-model="text" type="email" required placeholder="Last Name"></b-form-input>
+        <b-modal id="signup" title="Account Information" hide-footer style="top:z">
+          <b-form>
+            <b-form-group label-cols-sm="3" label="First Name" label-for="firstname">
+              <b-form-input id="firstname" v-model="firstname" type="text" required placeholder=""></b-form-input>
             </b-form-group>
+            <b-form-group label-cols-sm="3" label="Last Name" label-for="lastname">
+              <b-form-input id="lastname" v-model="lastname" type="text" required placeholder=""></b-form-input>
+            </b-form-group>
+            <b-form-group label-cols-sm="3" label="Email" label-for="email">
+              <b-form-input id="email" v-model="email" type="email" required placeholder=""></b-form-input>
+            </b-form-group>
+            <b-form-group label-cols-sm="3" label="Password" label-for="password" description="At least 8 characters, one upper case letter, number and symbol.">
+              <b-form-input id="password" v-model="password" type="password" :state="passwordValidate" required placeholder=""></b-form-input>
+            </b-form-group>
+            <hr/>
+            <b-button type="reset">Cancel</b-button>
+            <b-button type="submit" variant="primary" class="text-left">Sign Up</b-button>
           </b-form>
         </b-modal>
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="libs/heatmap.js/build/heatmap.min.js" charset="utf-8"></script>
-    <!--<script src="https://unpkg.com/vue/dist/vue.min.js"></script> !-->
+    <!--<script src="libs/heatmap.js/build/heatmap.min.js" charset="utf-8"></script>-->
+    <!--<script src="https://unpkg.com/vue/dist/vue.min.js"></script>-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>

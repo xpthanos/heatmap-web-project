@@ -1,32 +1,32 @@
 window.app = new Vue({
   el: '#app',
   data: {
-    name: ''
+    firstname:'',
+    lastname:'',
+    email:'',
+    password:'',
+    passwordState:null
   },
   computed: {
-    showAlert() {
-      return this.name.length > 4 ? true : false
+    passwordValidate() {
+      this.passwordState = this.password.length >= 8 ? true : false
+      return this.passwordState
+    },
+    cancelSignUp() {
+      this.password = ''
+      this.passwordState = null
+    },
+    okSignup(){
+      alert("Signed up!")
     }
   }
 });
 
 window.app = new Vue({
   el: '#loader',
-  data: {
-    name: ''
-  },
-  computed: {
-    showAlert() {
-      return this.name.length > 4 ? true : false
-    }
-  }
 });
 
 $(window).on('load',function() {
   document.getElementById("loader").style.visibility = "hidden";
   document.getElementById("app").style.visibility = "visible";
 });
-
-function myFunction() {
-  alert("Hello! I am an alert box!");
-};
