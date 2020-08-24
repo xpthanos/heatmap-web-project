@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
    crossorigin=""/>
+   <link rel=href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
   </head>
   <body>
     <!--Background-->
@@ -20,19 +21,19 @@
       <!--Main App-->
       <div id="app" style="visibility: hidden;">
           <!--Background Image-->
-          <div class="fixed-bottom fixed-top" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
+          <div class="fixed-bottom fixed-top animate__fadeIn" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
             <!--Logo Box-->
             <div style="margin: auto; margin-top: -20px; height: 500; width: 300px; background-color: #ffffff; ">
-              <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
+              <b-row><img class="animate__flip" src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
             </div>
             <!--Log In Box-->
             <b-container style="position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%); padding: 25px; height: 500; width: 300px; background-color: #ffffff;">
-              <b-form>
+              <b-form @submit="logIn">
                 <b-col>
                   <b-row class="pt-1 pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
                   <b-row class="pb-1" ><b-form-input id="login-email" type="email" required placeholder="E-mail" ></b-form-input></b-row>
                   <b-row class="pb-1" ><b-form-input id="login-password" type="password" required placeholder="Password">></b-form-input></b-row>
-                  <b-row class="pb-1"><b-button block variant="primary" onclick="myFunction()" >Log in</b-button></b-row>
+                  <b-row class="pb-1"><b-button type="submit" block variant="primary">Log in</b-button></b-row>
                 </b-col>
               </b-form>
                 <hr/>
@@ -40,8 +41,8 @@
             </b-container>
           </div>
         <!--Signup Modal Window-->
-        <b-modal id="signup" title="Account Information" hide-footer style="top:z">
-          <b-form>
+        <b-modal id="signup" title="Account Information" @hide="cancel" hide-footer>
+          <b-form @submit="signUp" @reset="cancel">
             <b-form-group label-cols-sm="3" label="First Name" label-for="firstname">
               <b-form-input id="firstname" v-model="firstname" type="text" required placeholder=""></b-form-input>
             </b-form-group>
@@ -56,7 +57,8 @@
             </b-form-group>
             <hr/>
             <b-button type="reset">Cancel</b-button>
-            <b-button type="submit" variant="primary" class="text-left">Sign Up</b-button>
+            <b-button type="submit" variant="primary">Sign Up</b-button>
+            <p id="demo"></p>
           </b-form>
         </b-modal>
       </div>

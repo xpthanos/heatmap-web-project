@@ -9,24 +9,33 @@ window.app = new Vue({
   },
   computed: {
     passwordValidate() {
-      this.passwordState = this.password.length >= 8 ? true : false
-      return this.passwordState
+      this.passwordState = (this.password.length >= 8) && /[A-Z]/.test(this.password) && /[0-9]/.test(this.password) && /[^A-Z^a-z^0-9]/.test(this.password)
+      return this.password.length == 0 ? null : this.passwordState // if the field is empty do not show format warning
+    }
+  },
+  methods: {
+    logIn(){
+      alert("Logged In!")
     },
-    cancelSignUp() {
-      this.password = ''
-      this.passwordState = null
+    cancel() {
+      this.firstname=''
+      this.lastname=''
+      this.email=''
+      this.password=''
+      this.passwordState=null
+      this.$bvModal.hide("signup")
     },
-    okSignup(){
+    signUp(){
       alert("Signed up!")
     }
   }
-});
+})
 
 window.app = new Vue({
   el: '#loader',
-});
+})
 
 $(window).on('load',function() {
-  document.getElementById("loader").style.visibility = "hidden";
-  document.getElementById("app").style.visibility = "visible";
+  document.getElementById("loader").style.visibility = "hidden"
+  document.getElementById("app").style.visibility = "visible"
 });
