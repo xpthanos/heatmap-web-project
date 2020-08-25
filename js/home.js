@@ -15,7 +15,7 @@ window.app = new Vue({
   },
   methods: {
     logIn(){
-      alert("Logged In!")
+
     },
     cancel() {
       this.firstname=''
@@ -32,10 +32,9 @@ window.app = new Vue({
 })
 
 window.app = new Vue({
-  el: '#loader',
+  el: '#loader'
 })
-
-$(window).on('load',function() {
+function hideLoader(){
   document.getElementById("loader").style.visibility = "hidden"
   document.getElementById("app").style.visibility = "visible"
-});
+}

@@ -6,38 +6,38 @@
     <title></title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-   crossorigin=""/>
-   <link rel=href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
   </head>
-  <body>
+  <body onload="hideLoader()">
     <!--Background-->
     <div class="fixed-bottom fixed-top" style="background-color: #75cdff;">
       <!--Loader-->
       <div id="loader" class="fixed-bottom fixed-top" style="background-color: #75cdff; ">
-        <b-spinner class="margin:auto" label="Loading..." style="position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%);"></b-spinner></div>
+        <b-spinner variant="light" label="Loading..." style="width: 3rem; height: 3rem; position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%);"></b-spinner>
       </div>
       <!--Main App-->
       <div id="app" style="visibility: hidden;">
           <!--Background Image-->
-          <div class="fixed-bottom fixed-top animate__fadeIn" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
+          <div class="fixed-bottom fixed-top animate__animated animate__fadeIn" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
             <!--Logo Box-->
-            <div style="margin: auto; margin-top: -20px; height: 500; width: 300px; background-color: #ffffff; ">
-              <b-row><img class="animate__flip" src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
+            <div class="animate__animated animate__fadeInDown" style="margin: auto; margin-top: -20px; height: 500; width: 300px; background-color: #ffffff;">
+              <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
             </div>
             <!--Log In Box-->
-            <b-container style="position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%); padding: 25px; height: 500; width: 300px; background-color: #ffffff;">
-              <b-form @submit="logIn">
-                <b-col>
-                  <b-row class="pt-1 pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
-                  <b-row class="pb-1" ><b-form-input id="login-email" type="email" required placeholder="E-mail" ></b-form-input></b-row>
-                  <b-row class="pb-1" ><b-form-input id="login-password" type="password" required placeholder="Password">></b-form-input></b-row>
-                  <b-row class="pb-1"><b-button type="submit" block variant="primary">Log in</b-button></b-row>
-                </b-col>
-              </b-form>
-                <hr/>
-              <b-row><b-link v-b-modal.signup style="margin: auto;">Sign up</b-link></b-row>
+            <span class="dot" style="position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%); padding: 40px; height: 300px; width: 300px; background-color: #ffffff; border-radius: 50%; display: inline-block;">
+              <span class="dot" style="">
+                <b-form @submit="logIn">
+                  <b-col>
+                    <b-row class="pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
+                    <b-row class="pb-1" ><b-form-input id="login-email" type="email" required placeholder="E-mail" ></b-form-input></b-row>
+                    <b-row class="pb-1" ><b-form-input id="login-password" type="password" required placeholder="Password">></b-form-input></b-row>
+                    <b-row class="pb-1"><b-button type="submit" block variant="primary">Log in</b-button></b-row>
+                  </b-col>
+                </b-form>
+                  <hr/>
+                <b-row><b-link v-b-modal.signup style="margin: auto;">Sign up</b-link></b-row>
+              </span>
             </b-container>
           </div>
         <!--Signup Modal Window-->
@@ -58,7 +58,6 @@
             <hr/>
             <b-button type="reset">Cancel</b-button>
             <b-button type="submit" variant="primary">Sign Up</b-button>
-            <p id="demo"></p>
           </b-form>
         </b-modal>
       </div>
