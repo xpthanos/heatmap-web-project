@@ -1,6 +1,8 @@
 window.app = new Vue({
   el: '#app',
   data: {
+    login_email:'',
+    login_password:'',
     firstname:'',
     lastname:'',
     email:'',
@@ -15,6 +17,9 @@ window.app = new Vue({
   },
   methods: {
     logIn(){
+      login_email = this.login_email
+      login_password = this.login_password
+      alert("email: "+login_email+"\npass: "+login_password)
 
     },
     cancel() {
@@ -27,6 +32,7 @@ window.app = new Vue({
     },
     signUp(){
       alert("Signed up!")
+
     }
   }
 })

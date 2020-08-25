@@ -19,9 +19,9 @@
       <!--Main App-->
       <div id="app" style="visibility: hidden;">
           <!--Background Image-->
-          <div class="fixed-bottom fixed-top animate__animated animate__fadeIn" style="margin-top: 50px; margin-bottom: 50px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
+          <div class="fixed-bottom fixed-top animate__animated animate__fadeIn" style="margin-top: 25px; margin-bottom: 25px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
             <!--Logo Box-->
-            <div class="animate__animated animate__fadeInDown" style="margin: auto; margin-top: -20px; height: 500; width: 300px; background-color: #ffffff;">
+            <div class="animate__animated animate__fadeInDown" style="margin: auto; margin-top: -15px; height: 500; width: 300px; background-color: #ffffff;">
               <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
             </div>
             <!--Log In Box-->
@@ -30,8 +30,8 @@
                 <b-form @submit="logIn">
                   <b-col>
                     <b-row class="pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
-                    <b-row class="pb-1" ><b-form-input id="login-email" type="email" required placeholder="E-mail" ></b-form-input></b-row>
-                    <b-row class="pb-1" ><b-form-input id="login-password" type="password" required placeholder="Password">></b-form-input></b-row>
+                    <b-row class="pb-1" ><b-form-input v-model="login_email" type="email" required placeholder="E-mail" ></b-form-input></b-row>
+                    <b-row class="pb-1" ><b-form-input v-model="login_password" type="password" required placeholder="Password">></b-form-input></b-row>
                     <b-row class="pb-1"><b-button type="submit" block variant="primary">Log in</b-button></b-row>
                   </b-col>
                 </b-form>
