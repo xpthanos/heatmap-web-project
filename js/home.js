@@ -40,6 +40,7 @@ window.app = new Vue({
 window.app = new Vue({
   el: '#loader'
 })
+
 function hideLoader(){
   document.getElementById("loader").style.visibility = "hidden"
   document.getElementById("app").style.visibility = "visible"
