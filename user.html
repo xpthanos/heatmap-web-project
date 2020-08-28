@@ -1,6 +1,33 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
+    <style>
+    .centered {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+    }
+    .centered-x {
+      margin-left:50%;
+      transform: translateX(-50%);
+    }
+    .align-right {
+      text-align: right;
+    }
+    .align-left {
+      text-align: left;
+    }
+    @media (max-width: 764px) {
+      .align-right{
+        text-align: center;
+      }
+      .align-left{
+        text-align: center;
+      }
+    }
+
+    </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title></title>
@@ -14,11 +41,12 @@
     <div class="fixed-bottom fixed-top" style="background-color: white; overflow: auto;">
       <!--Loader-->
       <div id="loader" class="fixed-bottom fixed-top">
-        <b-spinner variant="light" label="Loading..." style="width: 3rem; height: 3rem; position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%);"></b-spinner>
+        <b-spinner variant="info" label="Loading..." class="centered" style="width: 50px; height: 50px;"></b-spinner>
       </div>
       <!--Main App-->
       <div id="app" style="visibility: hidden;">
-        <b-navbar toggleable="sm" type="dark" variant="info">
+        <!--Nav Bar-->
+        <b-navbar class="fixed-top" toggleable="sm" type="dark" style="background-color: #02c6db;">
           <b-navbar-brand href="#">AnasaCity</b-navbar-brand>
           <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
           <b-collapse id="nav-collapse" is-nav>
@@ -29,25 +57,36 @@
             </b-navbar-nav>
           </b-collapse>
         </b-navbar>
-        <div style="text-align: center; margin:20px">
-          <b-row class="pb-2"><h3 style="margin-left:50%; transform: translateX(-50%);">Ioanna Gogou</h1></b-row>
-          <b-row class="pb-2"><img class="center" src="img/spock.jpg" alt="Avatar" style="margin-left:50%; transform: translateX(-50%); height: 50%; width: 50%; max-height: 150px; max-width: 150px; border-radius: 50%;"></b-row>
-          <b-row><p style="margin-left:50%; transform: translateX(-50%);"><b>Score:</b><br>200</p></b-row>
-          <b-row><p style="margin-left:50%; transform: translateX(-50%);"><b>Data Timespan:</b><br>10-10-20 - 10-10-20</p></b-row>
-          <b-row><p style="margin-left:50%; transform: translateX(-50%);"><b>Last upload:</b><br>10-10-20</p></b-row>
+        <!--Overview Page-->
+        <div  class="animate__animated animate__fadeIn"  style="text-align: center; margin:20px; margin-top: 80px;">
+          <b-row class="pb-2"><h3 class="centered-x">Ioanna Gogou</h1></b-row>
+          <b-row class="pb-2"><img class="centered-x" src="img/spock.jpg" alt="Avatar" style="height: 50%; width: 50%; max-height: 150px; max-width: 150px; border-radius: 50%;"></b-row>
+          <b-row><p v-b-tooltip.hover.right="{variant: 'dark'}" title="Eco Points" class="centered-x" style="font-size: 40px">200<img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 10px"></p></b-row>
+          <b-row><p class="centered-x"><b>Data Timespan:</b><br>10-10-20 - 10-10-20</p></b-row>
+          <b-row><p class="centered-x"><b>Last upload:</b><br>10-10-20</p></b-row>
           <hr/>
           <b-row>
-            <b-col sm>
-              <h1>Progress</h1>
-              <canvas id="progress_chart">
-              </canvas>
+            <b-col>
+              <div class="align-left">
+                <h2>Progress</h2>
+                <p>Jan 2020 - Dec 2020<p>
+              </div>
+              <div>
+                <canvas id="progress_chart" height="250px">
+                </canvas>
+              </div>
             </b-col>
-            <b-col sm>
-              <h1>Leaderboard</h1>
-              <b-table outlined style="height: 50%;" :items="items"></b-table>
+            <b-col md="auto">
+              <div class="align-right">
+                <h2>Leaderboard</h2>
+                <p>July 2020 <p>
+              </div>
+              <b-table outlined :items="items"></b-table>
             </b-col>
           </b-row>
         </div>
+        <!--Analysis Page-->
+        <!--Upload Page-->
       </div>
     </div>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->

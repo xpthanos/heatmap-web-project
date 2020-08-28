@@ -2,10 +2,10 @@ window.app = new Vue({
   el: '#app',
   data: {
     items: [
-          { rank: 1, name: 'Leo D.'},
-          { rank: 2, name: 'Pam B.'},
-          { rank: 3, name: 'Christos M.'},
-          { rank: 26, name: 'Ioanna G.', _rowVariant: 'info'}
+          { rank: 1, name: 'Leo D.', score: 870},
+          { rank: 2, name: 'Pam B.', score: 790},
+          { rank: 3, name: 'Christos M.', score: 655},
+          { rank: 26, name: 'Ioanna G.', score: 200, _rowVariant: 'info'}
         ]
   },
   computed: {
@@ -20,29 +20,21 @@ window.app = new Vue({
 
 var element = document.getElementById('progress_chart').getContext('2d');
 var chart = new Chart(element, {
-    // The type of chart we want to create
     type: 'line',
-
-    // The data for our dataset
     data: {
-        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
         datasets: [{
-            label: 'My First dataset',
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
-            data: [0, 10, 5, 2, 20, 30, 45]
+            label: 'Eco Points',
+            backgroundColor: 'rgb(187, 219, 138)',
+            borderColor: 'rgb(187, 219, 138)',
+            data: [0, 10, 5, 2, 20, 30, 45, 20, 14, 40, 30, 10]
         }]
     },
-
-    // Configuration options go here
     options: {
       legend: {
         display: false
       },
-      responsive: {
-        responsive: false,
-        maintainAspectRatio: false
-      }
+      maintainAspectRatio: false
     }
 });
 

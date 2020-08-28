@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
+  <style>
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+  </style>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title></title>
@@ -11,21 +19,21 @@
 </head>
 <body onload="hideLoader()">
   <!--Background-->
-  <div class="fixed-bottom fixed-top" style="background-color: #75cdff;">
+  <div class="fixed-bottom fixed-top" style="background-color: #02c6db;">
     <!--Loader-->
     <div id="loader" class="fixed-bottom fixed-top">
-      <b-spinner variant="light" label="Loading..." style="width: 50px; height: 50px; position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%);"></b-spinner>
+      <b-spinner type="grow" variant="light" label="Loading..." class="centered" style="width: 50px; height: 50px;"></b-spinner>
     </div>
     <!--Main App-->
     <div id="app" style="visibility: hidden;">
       <!--Background Image-->
-      <div class="fixed-bottom fixed-top animate__animated animate__fadeIn" style="margin-top: 25px; margin-bottom: 25px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
+      <div class="fixed-bottom fixed-top animate__animated animate__fadeIn" style="margin-top: 56px; margin-bottom: 56px; background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
         <!--Logo Box-->
         <div class="animate__animated animate__fadeInDown" style="margin: auto; margin-top: -15px; height: 500; width: 300px; background-color: white;">
           <b-row><img src="img/logo.svg" alt="logo" width="250" style="margin: auto;"></b-row>
         </div>
         <!--Log In Box-->
-        <span class="dot" style="position: absolute; top: 50%; left: 50%; transform: translateX(-50%) translateY(-50%); padding: 40px; height: 300px; width: 300px; background-color: white; border-radius: 50%; display: inline-block;">
+        <span class="dot centered" style="padding: 40px; height: 300px; width: 300px; background-color: white; border-radius: 50%; display: inline-block;">
           <span class="dot" style="">
             <b-form @submit="logIn">
               <b-col>
@@ -41,7 +49,7 @@
         </b-container>
       </div>
       <!--Signup Modal Window-->
-      <b-modal id="signup" title="Account Information" @hide="cancel" hide-footer>
+      <b-modal id="signup" title="Account Information" @hide="cancel" hide-footer >
         <b-form @submit="signUp" @reset="cancel">
           <b-form-group label-cols-sm="3" label="First Name" label-for="firstname">
             <b-form-input id="firstname" v-model="firstname" type="text" required placeholder=""></b-form-input>
