@@ -12,18 +12,26 @@
       margin-left:50%;
       transform: translateX(-50%);
     }
-    .align-right {
+    .align-right-pc {
       text-align: right;
     }
-    .align-left {
+    .align-left-pc {
       text-align: left;
     }
-    @media (max-width: 764px) {
-      .align-right{
+    .link-style {
+      color: #81e2ed
+    }
+    .link-style:hover {
+      color: #c0f1f6;
+      text-decoration: none;
+    }
+    @media (max-width: 767px) {
+      .align-right-pc{
         text-align: center;
       }
-      .align-left{
+      .align-left-pc{
         text-align: center;
+
       }
     }
 
@@ -41,52 +49,77 @@
     <div class="fixed-bottom fixed-top" style="background-color: white; overflow: auto;">
       <!--Loader-->
       <div id="loader" class="fixed-bottom fixed-top">
-        <b-spinner variant="info" label="Loading..." class="centered" style="width: 50px; height: 50px;"></b-spinner>
+        <b-spinner variant="info" label="Loading..." style="position: absolute; top: 50%; left: 50%; width: 50px; height: 50px; width: 50px; height: 50px;"></b-spinner>
       </div>
       <!--Main App-->
-      <div id="app" style="visibility: hidden;">
+      <div id="app" style="display: none;">
         <!--Nav Bar-->
         <b-navbar class="fixed-top" toggleable="sm" type="dark" style="background-color: #02c6db;">
-          <b-navbar-brand href="#">AnasaCity</b-navbar-brand>
           <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+          <b-navbar-brand> AnasaCity</b-navbar-brand>
           <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
-              <b-nav-item href="#">Overview</b-nav-item>
-              <b-nav-item href="#" disabled>Analysis</b-nav-item>
-              <b-nav-item href="#" disabled>Upload</b-nav-item>
+              <b-nav-item @click="showPage('overview')">Overview</b-nav-item>
+              <b-nav-item @click="showPage('analysis')">Analysis</b-nav-item>
+              <b-nav-item @click="showPage('upload')">Upload</b-nav-item>
             </b-navbar-nav>
           </b-collapse>
-        </b-navbar>
+        <b-link href="home.html" class="link-style" style="text-align: center; margin-right: 20px;" >Log out</b-link>
+      </b-navbar>
         <!--Overview Page-->
-        <div  class="animate__animated animate__fadeIn"  style="text-align: center; margin:20px; margin-top: 80px;">
+        <div id="overview" class="animate__animated animate__fadeIn"  style="text-align: center; padding: 20px; padding-top: 120px">
           <b-row class="pb-2"><h3 class="centered-x">Ioanna Gogou</h1></b-row>
           <b-row class="pb-2"><img class="centered-x" src="img/spock.jpg" alt="Avatar" style="height: 50%; width: 50%; max-height: 150px; max-width: 150px; border-radius: 50%;"></b-row>
           <b-row><p v-b-tooltip.hover.right="{variant: 'dark'}" title="Eco Points" class="centered-x" style="font-size: 40px">200<img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 10px"></p></b-row>
-          <b-row><p class="centered-x"><b>Data Timespan:</b><br>10-10-20 - 10-10-20</p></b-row>
-          <b-row><p class="centered-x"><b>Last upload:</b><br>10-10-20</p></b-row>
+          <b-row style="max-width: 450px; margin-left: 50%; transform: translateX(-50%);">
+            <b-col lg ><p ><b>Data Timespan:</b><br>10-10-20 - 10-10-20</p></b-col>
+            <b-col lg ><p class="centered-x"><b>Last upload:</b><br>10-10-20</p></b-row>
+          </b-row>
           <hr/>
           <b-row>
             <b-col>
-              <div class="align-left">
-                <h2>Progress</h2>
+              <div class="align-left-pc">
+                <h3>Eco Progress</h2>
                 <p>Jan 2020 - Dec 2020<p>
               </div>
-              <div>
-                <canvas id="progress_chart" height="250px">
+              <div style="height: 250px;">
+                <canvas id="progress_chart" >
                 </canvas>
               </div>
+            <hr/>
             </b-col>
             <b-col md="auto">
-              <div class="align-right">
-                <h2>Leaderboard</h2>
+              <div class="align-right-pc">
+                <h3>Leaderboard</h2>
                 <p>July 2020 <p>
               </div>
-              <b-table outlined :items="items"></b-table>
+              <div style="height: 250px;">
+                <b-table responsive outlined :items="items"></b-table>
+              </div>
             </b-col>
           </b-row>
         </div>
         <!--Analysis Page-->
+        <div id="analysis" class="animate__animated animate__fadeIn" style="display: none; text-align: center; margin:20px; margin-top: 100px;">
+          <h3>Select Activity:</h3>
+          <h3 id="test">~</h3>
+          <b-col md>
+            <div style="height: 250px;"><canvas id="ratio_chart"></canvas></div>
+          </b-col>
+          <hr/>
+          <b-row>
+            <b-col md>
+              <div style="height: 250px;"><canvas id="hour_chart"></canvas></div>
+            </b-col>
+            <b-col>
+              <div style="height: 250px;"><canvas id="day_chart"></canvas></div>
+            </b-col>
+          </b-row>
+        </div>
         <!--Upload Page-->
+        <div id="upload" class="animate__animated animate__fadeIn" style="display: none; text-align: center; margin:20px; margin-top: 100px;">
+          <p>hello</p>
+        </div>
       </div>
     </div>
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->

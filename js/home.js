@@ -1,3 +1,4 @@
+// variables
 window.app = new Vue({
   el: '#app',
   data: {
@@ -21,6 +22,7 @@ window.app = new Vue({
       login_password = this.login_password
       alert("email: "+login_email+"\npass: "+login_password)
 
+
     },
     cancel() {
       this.firstname=''
@@ -41,7 +43,8 @@ window.app = new Vue({
   el: '#loader'
 })
 
+// functions
 function hideLoader(){
-  document.getElementById("loader").style.visibility = "hidden"
-  document.getElementById("app").style.visibility = "visible"
+  document.getElementById("loader").style.display = "none"
+  document.getElementById("app").style.display = "block"
 }
