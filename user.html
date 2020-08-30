@@ -31,10 +31,8 @@
       }
       .align-left-pc{
         text-align: center;
-
       }
     }
-
     </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -48,8 +46,8 @@
     <!--Background-->
     <div class="fixed-bottom fixed-top" style="background-color: white; overflow: auto;">
       <!--Loader-->
-      <div id="loader" class="fixed-bottom fixed-top">
-        <b-spinner variant="info" label="Loading..." style="position: absolute; top: 50%; left: 50%; width: 50px; height: 50px; width: 50px; height: 50px;"></b-spinner>
+      <div id="loader" class="fixed-bottom fixed-top" style="position: absolute; top: 50%; left: 50%; margin-left:-25px; margin-top:-25px;">
+        <b-spinner label="Loading..." style="color: #02c6db ;width: 50px; height: 50px; width: 50px; height: 50px;"></b-spinner>
       </div>
       <!--Main App-->
       <div id="app" style="display: none;">
@@ -79,7 +77,7 @@
           <b-row>
             <b-col>
               <div class="align-left-pc">
-                <h3>Eco Progress</h2>
+                <h3>Eco Progress</h3>
                 <p>Jan 2020 - Dec 2020<p>
               </div>
               <div style="height: 250px;">
@@ -87,37 +85,56 @@
                 </canvas>
               </div>
             <hr/>
-            </b-col>
+          </b-col>
             <b-col md="auto">
               <div class="align-right-pc">
-                <h3>Leaderboard</h2>
+                <h3>Leaderboard</h3>
                 <p>July 2020 <p>
               </div>
               <div style="height: 250px;">
-                <b-table responsive outlined :items="items"></b-table>
+                <b-table responsive outlined :items="leaderboard"></b-table>
               </div>
             </b-col>
           </b-row>
         </div>
         <!--Analysis Page-->
-        <div id="analysis" class="animate__animated animate__fadeIn" style="display: none; text-align: center; margin:20px; margin-top: 100px;">
+        <div id="analysis" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 100px">
+          <!--<b-form-datepicker id="month-picker" v-model="month" placeholder="Month Selection" class="mb-2"></b-form-datepicker>
+          <b-form-datepicker id="year-picker" v-model="year" placeholder="Year Selection" class="mb-2"></b-form-datepicker>-->
+          <p>Select Year:</p>
+          <b-row>
+            <b-col>
+              <b-input-group>
+                <b-form-select id="from-years" v-model="from_year" :options="years"></b-form-select>
+                <b-form-select id="to-years" disabled v-model="to_year" :options="showYears"></b-form-select>
+              </b-input-group>
+            <b-col></b-col>
+          </b-row>
+          <p>Select Month:</p>
+          <b-row>
+            <b-col><b-form-select :options="years"></b-form-select></b-col>
+            <b-col><b-form-select :options="months"></b-form-select></b-col>
+          </b-row>
+          <hr/>
           <h3>Select Activity:</h3>
-          <h3 id="test">~</h3>
+          <h3 id="activity">~</h3>
           <b-col md>
             <div style="height: 250px;"><canvas id="ratio_chart"></canvas></div>
           </b-col>
           <hr/>
           <b-row>
             <b-col md>
+              <p id="active-hour">Most active hour: ~</3>
               <div style="height: 250px;"><canvas id="hour_chart"></canvas></div>
             </b-col>
             <b-col>
+              <p id="active-day">Most active day: ~</p>
               <div style="height: 250px;"><canvas id="day_chart"></canvas></div>
             </b-col>
           </b-row>
         </div>
         <!--Upload Page-->
-        <div id="upload" class="animate__animated animate__fadeIn" style="display: none; text-align: center; margin:20px; margin-top: 100px;">
+        <div id="upload" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 100px">
           <p>hello</p>
         </div>
       </div>

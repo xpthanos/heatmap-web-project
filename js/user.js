@@ -2,14 +2,36 @@
 window.app = new Vue({
   el: '#app',
   data: {
-    items: [
+    leaderboard: [
           { rank: 1, name: 'Leo D.', score: 870},
           { rank: 2, name: 'Pam B.', score: 790},
           { rank: 3, name: 'Christos M.', score: 655},
           { rank: 26, name: 'Ioanna G.', score: 200, _rowVariant: 'info'}
-        ]
+        ],
+    years: ["",2016,2017,2018,2019,2020], // they will be imported from database based on the users record
+    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    from_year: null,
+    to_year: null
   },
   computed: {
+    showYears(){
+      if (this.from_year!=""){
+        document.getElementById("to-years").disabled = false;
+      }
+      else {
+        document.getElementById("to-years").disabled = true;
+        this.to_year=""
+      }
+      var after_years = [""]
+      for (var year of this.years){
+        if (year!="") {
+          if (year>this.from_year){
+            after_years.push(year)
+          }
+        }
+      }
+      return after_years
+    }
   },
   methods: {
     showPage(sel_page){
@@ -17,7 +39,7 @@ window.app = new Vue({
       document.getElementById("analysis").style.display = "none"
       document.getElementById("upload").style.display = "none"
       document.getElementById(sel_page).style.display = "block"
-    },
+    }
   }
 })
 
@@ -32,8 +54,8 @@ var progress_chart = new Chart(progress_canvas, {
       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       datasets: [{
           label: 'Eco Points',
-          backgroundColor: "#bbdb8a",
-          borderColor: "#bbdb8a",
+          backgroundColor: "#BDEDA5",
+          borderColor: "#BDEDA5",
           data: [0, 10, 5, 2, 20, 30, 45, 20, 14, 40, 30, 10]
       }]
     },
@@ -50,7 +72,6 @@ var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
     data: {
       labels: ['Vehicle', 'Bicycle','On Foot', 'Walking', 'Running', 'Still', 'Tilting', 'Unknown'],
       datasets: [{
-        label: "%",
         backgroundColor: ["#EDA8A7", "#ECE1A5", "#BDEDA5", "#A6EDC9", "#A6D5ED", "#B3A6EE", "#D0A6EE", "#F2BCE0"],
         data: [10, 20, 30, 15, 15, 0, 0, 0]
         }]
@@ -60,12 +81,25 @@ var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
         display: false
       },
       maintainAspectRatio: false,
-      onHover: function (evt) {
+      tooltips: {
+        callbacks: {
+          label: function(tooltipItem, data) {
+            return data.labels[tooltipItem.index]+": "+data.datasets[0].data[tooltipItem.index]+"%"
+          }
+        }
+      },
+      onHover: function (evt) { //updates hour chart and day chart with data for specific activity
         var element = ratio_chart.getElementsAtEvent(evt)[0]
         if (element) {
           var label = ratio_chart.data.labels[element._index]
           var color = ratio_chart.data.datasets[0].backgroundColor[element._index]
-          document.getElementById("test").innerHTML = label
+          var active_hour_points = Math.max.apply(Math,transport_data[label]["hour_data"])
+          var active_hour = hour_chart.data.labels[transport_data[label]["hour_data"].indexOf(active_hour_points)]
+          var active_day_points = Math.max.apply(Math,transport_data[label]["day_data"])
+          var active_day = day_chart.data.labels[transport_data[label]["day_data"].indexOf(active_day_points)]
+          document.getElementById("activity").innerHTML = label
+          document.getElementById("active-hour").innerHTML = "Most active hour: "+active_hour
+          document.getElementById("active-day").innerHTML = "Most active day: "+active_day
           hour_chart.data.datasets[0].backgroundColor = color
           hour_chart.data.datasets[0].data = transport_data[label]["hour_data"]
           hour_chart.update()
@@ -81,18 +115,25 @@ var hour_canvas = document.getElementById('hour_chart');
 var hour_chart = new Chart(hour_canvas.getContext('2d'), {
     type: 'bar',
     data: {
-        labels: range(1,24),
+        labels: timeRange(),
         datasets: [{
             label: 'Eco Points',
-            backgroundColor: 'rgb(187, 219, 138)',
-            data: [0, 10, 5, 2, 20, 30, 45, 20, 14, 40, 30, 10]
+            backgroundColor: '#c7c7c7',
+            data: []
         }]
     },
     options: {
       legend: {
         display: false
       },
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero:true,
+            }
+        }]
+      }
     }
 })
 
@@ -103,15 +144,22 @@ var day_chart = new Chart(day_canvas.getContext('2d'), {
         labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         datasets: [{
             label: 'Eco Points',
-            backgroundColor: 'rgb(187, 219, 138)',
-            data: [0, 10, 5, 2, 20, 30, 45]
+            backgroundColor: '#c7c7c7',
+            data: []
         }]
     },
     options: {
       legend: {
         display: false
       },
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero:true
+            }
+        }]
+      }
     }
 })
 
@@ -123,15 +171,15 @@ var transport_data = {
   },
   "Bicycle": {
     "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
+    "day_data":[6, 30, 40, 15, 50, 20, 10, 5],
   },
   "On Foot": {
     "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
+    "day_data":[50, 20, 30, 55, 15, 0, 40, 0],
   },
   "Walking": {
     "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
+    "day_data":[40, 80, 20, 15, 5, 30, 75, 20],
   },
   "Running": {
     "hour_data": range(1,24),
@@ -161,6 +209,14 @@ function range(start,end){ //generate array with values from start to end
   var array = []
   for (i=start;i<=end;i++){
     array.push(i)
+  }
+  return array
+}
+
+function timeRange(){ //generate array with per hour strings
+  var array = []
+  for (i=1;i<=24;i++){
+    array.push(i+":00")
   }
   return array
 }
