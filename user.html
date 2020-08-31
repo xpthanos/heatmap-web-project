@@ -98,43 +98,44 @@
           </b-row>
         </div>
         <!--Analysis Page-->
-        <div id="analysis" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 100px">
+        <div id="analysis" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 120px">
           <!--<b-form-datepicker id="month-picker" v-model="month" placeholder="Month Selection" class="mb-2"></b-form-datepicker>
           <b-form-datepicker id="year-picker" v-model="year" placeholder="Year Selection" class="mb-2"></b-form-datepicker>-->
-          <p>Select Year:</p>
-          <b-row>
-            <b-col>
-              <b-input-group>
-                <b-form-select id="from-years" v-model="from_year" :options="years"></b-form-select>
-                <b-form-select id="to-years" disabled v-model="to_year" :options="showYears"></b-form-select>
-              </b-input-group>
-            <b-col></b-col>
-          </b-row>
-          <p>Select Month:</p>
-          <b-row>
-            <b-col><b-form-select :options="years"></b-form-select></b-col>
-            <b-col><b-form-select :options="months"></b-form-select></b-col>
-          </b-row>
+
+          <b-col class="centered-x" style="max-width: 500px">
+            <p>Select year or year range:</p>
+            <b-input-group>
+              <b-form-select id="from-year" v-model="from_year" :options="years"></b-form-select>
+              <div style="margin: auto; padding-left: 10px; padding-right: 10px">to</div>
+              <b-form-select id="to-year" disabled v-model="to_year" :options="showYears"></b-form-select>
+            </b-input-group>
+            <p>Select month or mοnth range:</p>
+            <b-input-group>
+              <b-form-select id="from-month"  v-model="from_month" :options="months"></b-form-select>
+              <div style="margin: auto; padding-left: 10px; padding-right: 10px">to</div>
+              <b-form-select id="to-month" disabled v-model="to_month" :options="showMonths"></b-form-select>
+            </b-input-group>
+          </b-col>
           <hr/>
           <h3>Select Activity:</h3>
           <h3 id="activity">~</h3>
           <b-col md>
-            <div style="height: 250px;"><canvas id="ratio_chart"></canvas></div>
+            <div style="height: 180px;"><canvas id="ratio_chart"></canvas></div>
           </b-col>
           <hr/>
           <b-row>
             <b-col md>
               <p id="active-hour">Most active hour: ~</3>
-              <div style="height: 250px;"><canvas id="hour_chart"></canvas></div>
+              <div style="height: 200px;"><canvas id="hour_chart"></canvas></div>
             </b-col>
             <b-col>
               <p id="active-day">Most active day: ~</p>
-              <div style="height: 250px;"><canvas id="day_chart"></canvas></div>
+              <div style="height: 200px;"><canvas id="day_chart"></canvas></div>
             </b-col>
           </b-row>
         </div>
         <!--Upload Page-->
-        <div id="upload" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 100px">
+        <div id="upload" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 120px">
           <p>hello</p>
         </div>
       </div>

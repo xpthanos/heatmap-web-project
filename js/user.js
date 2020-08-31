@@ -8,37 +8,61 @@ window.app = new Vue({
           { rank: 3, name: 'Christos M.', score: 655},
           { rank: 26, name: 'Ioanna G.', score: 200, _rowVariant: 'info'}
         ],
-    years: ["",2016,2017,2018,2019,2020], // they will be imported from database based on the users record
-    months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the users record
+    months: [{value:null, text: "-"},'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     from_year: null,
-    to_year: null
+    to_year: null,
+    from_month: null,
+    to_month: null
   },
   computed: {
-    showYears(){
-      if (this.from_year!=""){
-        document.getElementById("to-years").disabled = false;
+    showYears(){ //generates years for the "to-year" field
+      if (this.from_year!=null){
+        document.getElementById("to-year").disabled = false;
       }
       else {
-        document.getElementById("to-years").disabled = true;
-        this.to_year=""
+        document.getElementById("to-year").disabled = true;
+        this.to_year=null
       }
-      var after_years = [""]
+      var after_years = [{value:null, text: "-"}] //years available after "from-year"
       for (var year of this.years){
-        if (year!="") {
+        if (year!=null) {
           if (year>this.from_year){
             after_years.push(year)
           }
         }
       }
       return after_years
+    },
+    showMonths(){ //generates months for the "to-month" field
+      if (this.from_month!=null){
+        document.getElementById("to-month").disabled = false;
+      }
+      else {
+        document.getElementById("to-month").disabled = true;
+        this.to_month=null
+      }
+      var after_months = [{value:null, text: "-"}] //months available after "from-month"
+      for (var month of this.months){
+        if (month!=null) {
+          if (this.months.indexOf(month)>this.months.indexOf(this.from_month)){
+            after_months.push(month)
+          }
+        }
+      }
+      return after_months
     }
   },
   methods: {
     showPage(sel_page){
+      //hide and show elements
       document.getElementById("overview").style.display = "none"
       document.getElementById("analysis").style.display = "none"
       document.getElementById("upload").style.display = "none"
       document.getElementById(sel_page).style.display = "block"
+      //scroll to top
+      window.scrollTo(0,0) // for safari
+      //document.documentElement.scrollTop = 0; // for chrome, firefox, ie and opera
     }
   }
 })
@@ -117,7 +141,7 @@ var hour_chart = new Chart(hour_canvas.getContext('2d'), {
     data: {
         labels: timeRange(),
         datasets: [{
-            label: 'Eco Points',
+            label: 'Records',
             backgroundColor: '#c7c7c7',
             data: []
         }]
@@ -143,7 +167,7 @@ var day_chart = new Chart(day_canvas.getContext('2d'), {
     data: {
         labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         datasets: [{
-            label: 'Eco Points',
+            label: 'Records',
             backgroundColor: '#c7c7c7',
             data: []
         }]
