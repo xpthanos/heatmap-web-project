@@ -56,9 +56,8 @@ window.app = new Vue({
   methods: {
     showPage(sel_page){
       //hide and show elements
-      document.getElementById("overview").style.display = "none"
-      document.getElementById("analysis").style.display = "none"
-      document.getElementById("upload").style.display = "none"
+      document.getElementById("dashboard").style.display = "none"
+      document.getElementById("map").style.display = "none"
       document.getElementById(sel_page).style.display = "block"
       //scroll to top
       window.scrollTo(0,0) // for safari
