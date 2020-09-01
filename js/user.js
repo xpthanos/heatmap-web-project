@@ -70,9 +70,6 @@ window.app = new Vue({
   methods: {
     showPage(sel_page){
       //hide and show elements
-      document.getElementById("overview").style.display = "none"
-      document.getElementById("analysis").style.display = "none"
-      document.getElementById("upload").style.display = "none"
       document.getElementById(sel_page).style.display = "block"
       heatmap.invalidateSize(); // redraw heatmap to fix resize issue
     }
