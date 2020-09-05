@@ -1,15 +1,27 @@
 // variables
+var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+var full_months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+var full_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
 window.app = new Vue({
   el: '#app',
   data: {
+    username: "Ioanna Gogou",
+    points: 200,
+    data_start: "10-10-20",
+    data_end: "10-10-20",
+    last_upload: "10-10-20",
+    curr_year: new Date().getFullYear(),
+    last_month: full_months[new Date().getMonth()-1],
     leaderboard: [
           { rank: 1, name: 'Leo D.', score: 870},
           { rank: 2, name: 'Pam B.', score: 790},
           { rank: 3, name: 'Christos M.', score: 655},
           { rank: 26, name: 'Ioanna G.', score: 200, _rowVariant: 'info'}
         ],
-    years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the users record
-    months: [{value:null, text: "-"},'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the user's records
+    months: [{value:null, text: "-"}].concat(months),
     from_year: null,
     to_year: null,
     from_month: null,
@@ -18,12 +30,13 @@ window.app = new Vue({
   computed: {
     showYears(){ //generates years for the "to-year" field
       if (this.from_year!=null){
-        document.getElementById("to-year").disabled = false;
+        document.getElementById("to-year").disabled = false
       }
       else {
-        document.getElementById("to-year").disabled = true;
+        document.getElementById("to-year").disabled = true
         this.to_year=null
       }
+      if (this.from_year>this.to_year) this.to_year = null
       var after_years = [{value:null, text: "-"}] //years available after "from-year"
       for (var year of this.years){
         if (year!=null) {
@@ -36,12 +49,13 @@ window.app = new Vue({
     },
     showMonths(){ //generates months for the "to-month" field
       if (this.from_month!=null){
-        document.getElementById("to-month").disabled = false;
+        document.getElementById("to-month").disabled = false
       }
       else {
-        document.getElementById("to-month").disabled = true;
+        document.getElementById("to-month").disabled = true
         this.to_month=null
       }
+      if (this.from_month>this.to_month) this.to_month = null
       var after_months = [{value:null, text: "-"}] //months available after "from-month"
       for (var month of this.months){
         if (month!=null) {
@@ -56,12 +70,11 @@ window.app = new Vue({
   methods: {
     showPage(sel_page){
       //hide and show elements
-      document.getElementById("dashboard").style.display = "none"
-      document.getElementById("map").style.display = "none"
+      document.getElementById("overview").style.display = "none"
+      document.getElementById("analysis").style.display = "none"
+      document.getElementById("upload").style.display = "none"
       document.getElementById(sel_page).style.display = "block"
-      //scroll to top
-      window.scrollTo(0,0) // for safari
-      //document.documentElement.scrollTop = 0; // for chrome, firefox, ie and opera
+      heatmap.invalidateSize(); // redraw heatmap to fix resize issue
     }
   }
 })
@@ -74,11 +87,11 @@ var progress_canvas = document.getElementById('progress_chart').getContext('2d')
 var progress_chart = new Chart(progress_canvas, {
     type: 'line',
     data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      labels: months,
       datasets: [{
           label: 'Eco Points',
           backgroundColor: "#BDEDA5",
-          borderColor: "#BDEDA5",
+          borderColor: "#FFFFFF",
           data: [0, 10, 5, 2, 20, 30, 45, 20, 14, 40, 30, 10]
       }]
     },
@@ -119,7 +132,7 @@ var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
           var active_hour_points = Math.max.apply(Math,transport_data[label]["hour_data"])
           var active_hour = hour_chart.data.labels[transport_data[label]["hour_data"].indexOf(active_hour_points)]
           var active_day_points = Math.max.apply(Math,transport_data[label]["day_data"])
-          var active_day = day_chart.data.labels[transport_data[label]["day_data"].indexOf(active_day_points)]
+          var active_day = full_days[transport_data[label]["day_data"].indexOf(active_day_points)]
           document.getElementById("activity").innerHTML = label
           document.getElementById("active-hour").innerHTML = "Most active hour: "+active_hour
           document.getElementById("active-day").innerHTML = "Most active day: "+active_day
@@ -164,7 +177,7 @@ var day_canvas = document.getElementById('day_chart');
 var day_chart = new Chart(day_canvas.getContext('2d'), {
     type: 'bar',
     data: {
-        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        labels: days,
         datasets: [{
             label: 'Records',
             backgroundColor: '#c7c7c7',
@@ -186,6 +199,17 @@ var day_chart = new Chart(day_canvas.getContext('2d'), {
     }
 })
 
+var heatmap = L.map('heatmap', { dragging: !L.Browser.mobile }).setView([38.230462,21.753150], 12);
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    minZoom: 12,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1Ijoiam9hbmdvZyIsImEiOiJja2VpcWJ2NTMyOG00MnNtaWpqejlxYTAwIn0.x3iJFQ5cNLEgBpDTQXfciA',
+    dragging: !L.Browser.mobile
+}).addTo(heatmap);
+heatmap.scrollWheelZoom.disable()
 
 var transport_data = {
   "Vehicle": {

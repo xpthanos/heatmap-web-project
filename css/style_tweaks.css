@@ -14,6 +14,9 @@
 .align-left-pc {
   text-align: left;
 }
+.hide-mobile {
+  display: none;
+}
 .link-style {
   color: #81e2ed
 }
@@ -22,10 +25,15 @@
   text-decoration: none;
 }
 @media (max-width: 767px) {
-  .align-right-pc{
+  .align-right-pc {
     text-align: center;
   }
-  .align-left-pc{
+  .align-left-pc {
     text-align: center;
   }
+  .hide-mobile {
+    display: block;
+  }
+  #heatmap-col{order:1;}
+  #activity-col{order:2;}
 }
