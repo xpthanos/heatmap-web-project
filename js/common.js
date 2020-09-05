@@ -78,9 +78,8 @@ window.app = new Vue({
       document.getElementById("dashboard").style.display = "none"
       document.getElementById("map").style.display = "none"
       document.getElementById(sel_page).style.display = "block"
-      if(sel_page=="map"){this.getMapData();}
-      heatmap.invalidateSize(); // redraw heatmap to fix resize issue
-
+      if(sel_page=="map"){this.getMapData();admin_heatmap.invalidateSize()} // redraw heatmap to fix resize issue;}
+      if(sel_page=="analysis"){user_heatmap.invalidateSize()}; // redraw heatmap to fix resize issue}
     },
     getStats: function(){
         axios.get('db/stats.php')
@@ -223,7 +222,7 @@ var day_chart = new Chart(day_canvas.getContext('2d'), {
     }
 })
 
-var heatmap = L.map('heatmap', { dragging: !L.Browser.mobile }).setView([38.230462,21.753150], 12);
+var user_heatmap = L.map('user-heatmap', { dragging: !L.Browser.mobile }).setView([38.230462,21.753150], 12);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     minZoom: 12,
@@ -231,9 +230,8 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     tileSize: 512,
     zoomOffset: -1,
     accessToken: 'pk.eyJ1Ijoiam9hbmdvZyIsImEiOiJja2VpcWJ2NTMyOG00MnNtaWpqejlxYTAwIn0.x3iJFQ5cNLEgBpDTQXfciA',
-    dragging: !L.Browser.mobile
-}).addTo(heatmap);
-heatmap.scrollWheelZoom.disable()
+}).addTo(user_heatmap);
+user_heatmap.scrollWheelZoom.disable()
 
 var transport_data = {
   "Vehicle": {
@@ -269,18 +267,37 @@ var transport_data = {
     "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
   }
 }
-
-var mymap = L.map('mapid', {dragging: !L.Browser.mobile}).setView([51.505, -0.09], 13);
-
+var cfg = {
+  // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+  // if scaleRadius is false it will be the constant radius used in pixels
+  "radius": 2,
+  "maxOpacity": .8,
+  // scales the radius based on map zoom
+  "scaleRadius": true,
+  // if set to false the heatmap uses the global maximum for colorization
+  // if activated: uses the data maximum within the current map boundaries
+  //   (there will always be a red spot with useLocalExtremas true)
+  "useLocalExtrema": true,
+  // which field name in your data represents the latitude - default "lat"
+  latField: 'lat',
+  // which field name in your data represents the longitude - default "lng"
+  lngField: 'lng',
+  // which field name in your data represents the data value - default "value"
+  valueField: 'count'
+}
+var admin_heatmap = L.map('admin-heatmap', {dragging: !L.Browser.mobile}).setView([38.230462,21.753150], 12);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
+    minZoom: 12,
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: 'pk.eyJ1Ijoid2VicHJvajIwMjAiLCJhIjoiY2tlazRydmlnMHBjMjJ5cGlybnZvM2x5YyJ9.LHhwAHv1LV6kPzfOy4Y3VA',
-    dragging: !L.Browser.mobile
-}).addTo(mymap);
+}).addTo(admin_heatmap);
+admin_heatmap.scrollWheelZoom.disable()
+var admin_heatmap_layer = new HeatmapOverlay(cfg);
+admin_heatmap_layer.setData(map);
+admin_heatmap.addLayer(admin_heatmap_layer);
 
 var ratio_canvas2 = document.getElementById('ratio_chart2');
 var ratio_chart2 = new Chart(ratio_canvas2.getContext('2d'), {
@@ -405,34 +422,6 @@ var year_chart = new Chart(year_canvas, {
       maintainAspectRatio: false
     }
 })
-
-
-var cfg = {
-  // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-  // if scaleRadius is false it will be the constant radius used in pixels
-  "radius": 2,
-  "maxOpacity": .8,
-  // scales the radius based on map zoom
-  "scaleRadius": true,
-  // if set to false the heatmap uses the global maximum for colorization
-  // if activated: uses the data maximum within the current map boundaries
-  //   (there will always be a red spot with useLocalExtremas true)
-  "useLocalExtrema": true,
-  // which field name in your data represents the latitude - default "lat"
-  latField: 'lat',
-  // which field name in your data represents the longitude - default "lng"
-  lngField: 'lng',
-  // which field name in your data represents the data value - default "value"
-  valueField: 'count'
-};
-
-
-var heatmapLayer = new HeatmapOverlay(cfg);
-
-heatmapLayer.setData(map);
-
-mymap.addLayer(heatmapLayer);
-
 
 // functions
 function hideLoader(){

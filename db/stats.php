@@ -1,14 +1,14 @@
 <?php
-$host = "127.0.0.1";
+$host = "localhost";
 $user = "root";
 $password = "Take@DeepBreath";
 $dbname = "userdata";
 
 $conn = mysqli_connect($host, $user, $password, $dbname);
 
-$sql = $conn->query("SELECT activity_type,COUNT(*) as count 
-FROM userdata 
-GROUP BY activity_type 
+$sql = $conn->query("SELECT activity_type,COUNT(*) as count
+FROM userdata
+GROUP BY activity_type
 ORDER BY count DESC;");
 echo $sql;
 

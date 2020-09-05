@@ -73,7 +73,7 @@
               <b-nav-item @click="showPage('map')">Χάρτης</b-nav-item>
             </b-navbar-nav>
           </b-collapse>
-          <b-link href="home.html" class="link-style" style="text-align: center; margin-right: 20px;" >Log out</b-link>
+          <b-link href="index.html" class="link-style" style="text-align: center; margin-right: 20px;" >Log out</b-link>
         </b-navbar>
         <!--Overview Page-->
         <div id="overview" class="animate__animated animate__fadeIn"  style="text-align: center; padding: 20px; padding-top: 120px">
@@ -147,8 +147,8 @@
                 </b-col>
               </b-row>
             </b-col>
-            <b-col id="heatmap-col" md>
-              <div id="heatmap" style="height: 630px;"></div>
+            <b-col md>
+              <div id="user-heatmap" style="height: 630px;"></div>
               <hr/ class="hide-mobile">
             </b-col>
           </b-row>
@@ -188,7 +188,7 @@
         </div>
         <!--Map Page-->
         <div id="map" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 120px">
-          <div id="mapid" style= "height: 580px;"></div>
+          <div id="admin-heatmap" style= "height: 580px;"></div>
         </div>
       </div>
     </div>
