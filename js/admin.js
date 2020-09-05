@@ -19,7 +19,7 @@ window.app = new Vue({
         axios.get('db/stats.php')
         .then(function (response) {
             console.log(response.data);
-            app.contacts = response.data;
+            app.stat_div = response.data;
 
         })
         .catch(function (error) {
