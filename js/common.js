@@ -3,7 +3,28 @@ var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oc
 var full_months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 var full_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-var map = { max: 1, data: []};
+
+var map = { max: 2, data: []};
+
+var cfg = {
+  // radius should be small ONLY if scaleRadius is true (or small radius is intended)
+  // if scaleRadius is false it will be the constant radius used in pixels
+  "radius": 90,
+  "maxOpacity": .8,
+  // scales the radius based on map zoom
+  "scaleRadius": false,
+  // if set to false the heatmap uses the global maximum for colorization
+  // if activated: uses the data maximum within the current map boundaries
+  //   (there will always be a red spot with useLocalExtremas true)
+  "useLocalExtrema": false,
+  // which field name in your data represents the latitude - default "lat"
+  latField: 'lat',
+  // which field name in your data represents the longitude - default "lng"
+  lngField: 'lng',
+  // which field name in your data represents the data value - default "value"
+  valueField: 'count'
+};
+var heatmapLayer = new HeatmapOverlay(cfg);
 window.app = new Vue({
   el: '#app',
   data: {
@@ -98,6 +119,8 @@ window.app = new Vue({
       .then(function (response){
         map.data = response.data;
         console.log(map);
+        heatmapLayer.setData(map);
+        mymap.addLayer(heatmapLayer);
       })
     }
   }
@@ -233,7 +256,7 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     accessToken: 'pk.eyJ1Ijoiam9hbmdvZyIsImEiOiJja2VpcWJ2NTMyOG00MnNtaWpqejlxYTAwIn0.x3iJFQ5cNLEgBpDTQXfciA',
     dragging: !L.Browser.mobile
 }).addTo(heatmap);
-heatmap.scrollWheelZoom.disable()
+heatmap.scrollWheelZoom.disable();
 
 var transport_data = {
   "Vehicle": {
@@ -270,7 +293,7 @@ var transport_data = {
   }
 }
 
-var mymap = L.map('mapid', {dragging: !L.Browser.mobile}).setView([51.505, -0.09], 13);
+var admin_heatmap = L.map('admin_heatmap', {dragging: !L.Browser.mobile}).setView([51.505, -0.09], 13);
 
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -406,32 +429,6 @@ var year_chart = new Chart(year_canvas, {
     }
 })
 
-
-var cfg = {
-  // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-  // if scaleRadius is false it will be the constant radius used in pixels
-  "radius": 2,
-  "maxOpacity": .8,
-  // scales the radius based on map zoom
-  "scaleRadius": true,
-  // if set to false the heatmap uses the global maximum for colorization
-  // if activated: uses the data maximum within the current map boundaries
-  //   (there will always be a red spot with useLocalExtremas true)
-  "useLocalExtrema": true,
-  // which field name in your data represents the latitude - default "lat"
-  latField: 'lat',
-  // which field name in your data represents the longitude - default "lng"
-  lngField: 'lng',
-  // which field name in your data represents the data value - default "value"
-  valueField: 'count'
-};
-
-
-var heatmapLayer = new HeatmapOverlay(cfg);
-
-heatmapLayer.setData(map);
-
-mymap.addLayer(heatmapLayer);
 
 
 // functions
