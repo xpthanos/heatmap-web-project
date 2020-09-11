@@ -3,9 +3,7 @@ var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oc
 var full_months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 var full_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-
 var map = { max: 2, data: []};
-
 var cfg = {
   // radius should be small ONLY if scaleRadius is true (or small radius is intended)
   // if scaleRadius is false it will be the constant radius used in pixels
@@ -24,7 +22,7 @@ var cfg = {
   // which field name in your data represents the data value - default "value"
   valueField: 'count'
 };
-var heatmapLayer = new HeatmapOverlay(cfg);
+var admin_heatmap_layer = new HeatmapOverlay(cfg);
 window.app = new Vue({
   el: '#app',
   data: {
@@ -118,8 +116,8 @@ window.app = new Vue({
       .then(function (response){
         map.data = response.data;
         console.log(map);
-        heatmapLayer.setData(map);
-        mymap.addLayer(heatmapLayer);
+        admin_heatmap_layer.setData(map);
+        admin_heatmap.addLayer(admin_heatmap_layer);
       })
     }
   }
@@ -136,8 +134,8 @@ var progress_chart = new Chart(progress_canvas, {
       labels: months,
       datasets: [{
           label: 'Eco Points',
-          backgroundColor: "#BDEDA5",
-          borderColor: "#FFFFFF",
+          backgroundColor: "rgba(90,152,255,0.2)",
+          borderColor: "rgba(90,152,255,1)",
           data: [0, 10, 5, 2, 20, 30, 45, 20, 14, 40, 30, 10]
       }]
     },
@@ -254,8 +252,8 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     zoomOffset: -1,
     accessToken: 'pk.eyJ1Ijoiam9hbmdvZyIsImEiOiJja2VpcWJ2NTMyOG00MnNtaWpqejlxYTAwIn0.x3iJFQ5cNLEgBpDTQXfciA',
     dragging: !L.Browser.mobile
-}).addTo(heatmap);
-heatmap.scrollWheelZoom.disable();
+}).addTo(user_heatmap);
+user_heatmap.scrollWheelZoom.disable();
 
 var transport_data = {
   "Vehicle": {
@@ -292,20 +290,17 @@ var transport_data = {
   }
 }
 
-var admin_heatmap = L.map('admin_heatmap', {dragging: !L.Browser.mobile}).setView([51.505, -0.09], 13);
-
+var admin_heatmap = L.map('admin-heatmap', {dragging: !L.Browser.mobile}).setView([38.2, 21.7], 13);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    minZoom: 12,
+    minZoom: 3,
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,
     accessToken: 'pk.eyJ1Ijoid2VicHJvajIwMjAiLCJhIjoiY2tlazRydmlnMHBjMjJ5cGlybnZvM2x5YyJ9.LHhwAHv1LV6kPzfOy4Y3VA',
 }).addTo(admin_heatmap);
 admin_heatmap.scrollWheelZoom.disable()
-var admin_heatmap_layer = new HeatmapOverlay(cfg);
-admin_heatmap_layer.setData(map);
-admin_heatmap.addLayer(admin_heatmap_layer);
+
 
 var ratio_canvas2 = document.getElementById('ratio_chart2');
 var ratio_chart2 = new Chart(ratio_canvas2.getContext('2d'), {
