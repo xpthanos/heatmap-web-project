@@ -129,7 +129,7 @@ var ratio_canvas = document.getElementById('ratio_chart');
 var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: ['Vehicle', 'Bicycle','On Foot', 'Walking', 'Running', 'Still', 'Tilting', 'Unknown'],
+      labels: ['Vehicle', 'Bicycle','On Foot', 'Still', 'Unknown'],
       datasets: [{
         backgroundColor: ["#EDA8A7", "#ECE1A5", "#BDEDA5", "#A6EDC9", "#A6D5ED", "#B3A6EE", "#D0A6EE", "#F2BCE0"],
         data: [10, 20, 30, 15, 15, 0, 0, 0]
