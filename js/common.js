@@ -7,7 +7,7 @@ var map = { max: 2, data: []};
 var cfg = {
   // radius should be small ONLY if scaleRadius is true (or small radius is intended)
   // if scaleRadius is false it will be the constant radius used in pixels
-  "radius": 90,
+  "radius": 30,
   "maxOpacity": .8,
   // scales the radius based on map zoom
   "scaleRadius": false,
@@ -293,7 +293,7 @@ var transport_data = {
 var admin_heatmap = L.map('admin-heatmap', {dragging: !L.Browser.mobile}).setView([38.2, 21.7], 13);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    minZoom: 3,
+    minZoom: 8,
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,

@@ -7,15 +7,12 @@ $dbname = "userdata";
 $conn = mysqli_connect($host, $user, $password, $dbname);
 
 $result = array('error'=>false);
-echo $_POST['name'];
-echo $_POST['pass'];
-echo $_POST['email'];
-$randid = rand(1,100000);
 $name = $_POST['name'];
 $pass = $_POST['pass'];
 $email = $_POST['email'];
+$randid = openssl_encrypt($email, "AES-128-CTR", $pass);
 $type = 1;
-$sql = $conn->query("INSERT INTO user (userid,username,password,email,type) VALUES('$randid','$name','$pass', '$email', '$type')");
+$sql = $conn->query("INSERT INTO user (userid,username,password,email,type) VALUES('$randid','$name',MD5('$pass'), '$email', '$type')");
 echo $sql;
 if($sql)
 {
