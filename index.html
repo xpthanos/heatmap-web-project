@@ -2,7 +2,13 @@
 <html lang="en" dir="ltr">
 <head>
   <style>
-  @media (max-height: 767px) {
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+  @media (max-height: 800px) {
     .centered {
       top: 60%;
     }
@@ -12,14 +18,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title></title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-  <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"/>
+  <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.css"/>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
-  <link rel="stylesheet" href="css/style_tweaks.css">
 </head>
 <body onload="hideLoader()">
   <!--Background-->
-  <div class="fixed-bottom fixed-top" style="background-color: #02c6db;">
+  <div class="fixed-bottom fixed-top" style="background-color: #24cb7f;">
     <!--Loader-->
     <div id="loader" class="fixed-bottom fixed-top">
       <b-spinner variant="light" label="Loading..." style="position: absolute; top: 50%; left: 50%; margin-left:-25px; margin-top:-25px; width: 50px; height: 50px;"></b-spinner>
@@ -29,43 +34,43 @@
       <!--Background Image-->
       <div class="fixed-bottom fixed-top animate__animated animate__fadeIn" style="background-image: url('img/bg.JPG'); background-size: cover; background-position: center bottom;">
         <!--Logo Box-->
-        <div class="animate__animated animate__fadeInDown" style="margin-top: 50px;">
-          <b-row><img src="img/logo.png" alt="logo" height="200" style="margin: auto; height: 90%; width: 70%; max-width: 400px;"></b-row>
+        <div id="logo-box" class="animate__animated animate__fadeInDown" style="margin-top: 55px;">
+          <b-row><img src="img/logo.svg" alt="logo" style="margin: auto; height: 90%; width: 70%; max-width: 250px;"></b-row>
         </div>
         <!--Log In Box-->
         <span class="dot centered" style="padding: 40px; height: 300px; width: 300px; background-color: white; border-radius: 50%; display: inline-block;">
           <span class="dot">
-            <b-form @submit="logIn">
+            <b-form @submit="logIn()">
               <b-col>
-                <b-row class="pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto;"></b-row>
-                <b-row class="pb-1" ><b-form-input v-model="login_email" type="email" required placeholder="E-mail" ></b-form-input></b-row>
-                <b-row class="pb-1" ><b-form-input v-model="login_password" type="password" required placeholder="Password">></b-form-input></b-row>
-                <b-row><b-button href="common.html" type="submit" block variant="primary">Log in</b-button></b-row>
+                <b-row class="pb-2" ><img src="img/profile.png" alt="profile" width="50" height="50" style="margin: auto; border-radius: 50%;"></b-row>
+                <b-row id="email-field" class="pb-1" ><b-form-input v-model="login_email" type="email" required placeholder="E-mail" ></b-form-input></b-row>
+                <b-row id="pass-field" class="pb-1" ><b-form-input v-model="login_password" type="password" required placeholder="Κωδικός">></b-form-input></b-row>
+                <b-row><b-button type="submit" block style="background-color: #24cb7f; border-color: #24cb7f">Σύνδεση</b-button></b-row>
               </b-col>
             </b-form>
             <hr/>
-            <b-row><b-link v-b-modal.signup style="text-decoration: none; margin: auto;">Sign up</b-link></b-row>
+            <b-row><b-link v-b-modal.signup style="color: #1da869; text-decoration: none; margin: auto;">Εγγραφή</b-link></b-row>
           </span>
         </b-container>
       </div>
       <!--Signup Modal Window-->
       <b-modal id="signup" title="Account Information" @hide="cancel" hide-footer >
-        <b-form @submit="signUp" @reset="cancel">
-          <b-form-group label-cols-sm="3" label="First Name" label-for="firstname">
-            <b-form-input id="firstname" v-model="firstname" type="text" required placeholder=""></b-form-input>
+        <b-form @submit.stop.prevent="signUp" @reset="cancel">
+          <b-form-group label-cols-sm="3" label="Ονομα" label-for="firstname">
+            <b-form-input id="firstname" v-model="firstname" type="text" :state="firstnameValidate" required placeholder=""></b-form-input>
           </b-form-group>
-          <b-form-group label-cols-sm="3" label="Last Name" label-for="lastname">
-            <b-form-input id="lastname" v-model="lastname" type="text" required placeholder=""></b-form-input>
+          <b-form-group label-cols-sm="3" label="Επώνυμο" label-for="lastname">
+            <b-form-input id="lastname" v-model="lastname" type="text" :state="lastnameValidate" required placeholder=""></b-form-input>
           </b-form-group>
-          <b-form-group label-cols-sm="3" label="Email" label-for="email">
-            <b-form-input id="email" v-model="email" type="email" required placeholder=""></b-form-input>
+          <b-form-group label-cols-sm="3" label="E-mail" label-for="email">
+            <b-form-input id="email" v-model="email" type="email" :state="emailValidate" required placeholder=""></b-form-input>
           </b-form-group>
-          <b-form-group label-cols-sm="3" label="Password" label-for="password" description="At least 8 characters, one upper case letter, number and symbol.">
+          <b-form-group label-cols-sm="3" label="Κωδικός" label-for="password" description="Τουλάχιστον 8 χαρακτήρες, ένα κεφαλαίο γράμμα, αριθμός και σύμβολο.">
             <b-form-input id="password" v-model="password" type="password" :state="passwordValidate" required placeholder=""></b-form-input>
           </b-form-group>
           <hr/>
-          <b-button type="reset">Cancel</b-button>
-          <b-button type="submit" variant="primary">Sign Up</b-button>
+          <b-button type="reset">Ακύρωση</b-button>
+          <b-button type="submit" style="background-color: #24cb7f; border-color: #24cb7f" >Εγγραφή</b-button>
         </b-form>
       </b-modal>
     </div>
@@ -74,8 +79,9 @@
   <!--<script src="libs/heatmap.js/build/heatmap.min.js" charset="utf-8"></script>-->
   <!--<script src="https://unpkg.com/vue/dist/vue.min.js"></script>-->
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-vue@2.15.0/dist/bootstrap-vue.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="js/index.js" charset="utf-8"></script>
 </body>
 </html>

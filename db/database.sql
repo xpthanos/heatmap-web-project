@@ -12,17 +12,20 @@ primary key (userid)
 
 create table record (
 heading int unsigned,
-activity_type enum('IN_VEHICLE','ON_BICYCLE', 'ON_FOOT', 'RUNNING', 'STILL', 'TILTING', 'UNKNOWN', 'WALKING') default 'UNKNOWN',
+activity_type enum('IN_VEHICLE','ON_BICYCLE', 'ON_FOOT', 'RUNNING', 'STILL', 'WALKING'),
 activity_confidence tinyint unsigned,
-activity_timestamp datetime not null,
+activity_timestamp timestamp not null,
 vertical_accuracy int unsigned,
 velocity int unsigned,
 accuracy int unsigned not null,
 longitude int unsigned not null,
 latitude int unsigned not null,
 altitude int,
-record_timestamp datetime,
+record_timestamp timestamp,
 userid int unsigned not null,
 primary key (activity_timestamp,userid),
 constraint by_user foreign key (userid) references user(userid) on delete cascade on update cascade
 );
+
+insert into user values (0,'System Admin','1','admin@anasa.gr','admin');
+insert into user values (1,'Ιωάννα Γώγου','1','ioanna@anasa.gr','user');
