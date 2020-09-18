@@ -5,24 +5,51 @@ window.app = new Vue({
     login_email:'',
     login_password:'',
     firstname:'',
+    firstnameState: null,
     lastname:'',
+    lastnameState: null,
     email:'',
+    emailState: null,
     password:'',
-    passwordState:null
+    passwordState: null,
   },
   computed: {
+    firstnameValidate(){
+      this.firstnameState = this.firstname.length == 0 ? null : true
+      return this.firstnameState
+    },
+    lastnameValidate(){
+      this.lastnameState = this.lastname.length == 0 ? null : true
+      return this.lastnameState
+    },
+    emailValidate(){
+      this.emailState = this.email.length == 0 ? null : /.+[@].+[.].+/.test(this.email)
+      return this.emailState
+    },
     passwordValidate() {
-      this.passwordState = (this.password.length >= 8) && /[A-Z]/.test(this.password) && /[0-9]/.test(this.password) && /[^A-Z^a-z^0-9]/.test(this.password)
-      return this.password.length == 0 ? null : this.passwordState // if the field is empty do not show format warning
+      this.passwordState = this.password.length == 0 ? null : (this.password.length >= 8) && /[A-Z]/.test(this.password) && /[0-9]/.test(this.password) && /[^A-Z^a-z^0-9]/.test(this.password)
+      return this.passwordState
     }
   },
   methods: {
     logIn(){
-      login_email = this.login_email
-      login_password = this.login_password
-      alert("email: "+login_email+"\npass: "+login_password)
-
-
+      event.preventDefault() //prevents page reload after button submit
+      login_email = this.login_email;
+      login_password = this.login_password;
+      axios.post('/db/login.php',{'email': this.login_email, 'password': this.login_password})
+      .then(function (response) {
+        if (response.data != null){
+          alert("Βρέθηκε λογαριασμός")
+        }
+        else{
+          alert("Δεν βρέθηκε λογαριασμός")
+          document.getElementById('email-field').state = false
+          document.getElementById('pass-field').state = false
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
     },
     cancel() {
       this.firstname=''
@@ -33,8 +60,17 @@ window.app = new Vue({
       this.$bvModal.hide("signup")
     },
     signUp(){
-      alert("Signed up!")
-
+      event.preventDefault() //prevents page reload after button submit
+      if (this.firstnameState & this.lastnameState & this.emailState & this.passwordState){
+        axios.post('/db/signup.php',{'name': this.firstname+' '+this.lastname, 'email': this.email, 'password':this.password})
+        .then(function (response) {
+            alert("Η εγγραφή σας ολοκληρώθηκε με επιτυχία")
+            location.reload();
+        })
+        .catch(function (error) {
+          console.log(error);
+        })
+      }
     }
   }
 })

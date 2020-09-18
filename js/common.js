@@ -1,28 +1,29 @@
 // variables
-var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-var full_months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-var full_days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-var map = { max: 2, data: []};
-var cfg = {
-  // radius should be small ONLY if scaleRadius is true (or small radius is intended)
-  // if scaleRadius is false it will be the constant radius used in pixels
-  "radius": 90,
-  "maxOpacity": .8,
-  // scales the radius based on map zoom
-  "scaleRadius": false,
-  // if set to false the heatmap uses the global maximum for colorization
-  // if activated: uses the data maximum within the current map boundaries
-  //   (there will always be a red spot with useLocalExtremas true)
-  "useLocalExtrema": false,
-  // which field name in your data represents the latitude - default "lat"
-  latField: 'lat',
-  // which field name in your data represents the longitude - default "lng"
-  lngField: 'lng',
-  // which field name in your data represents the data value - default "value"
-  valueField: 'count'
-};
-var admin_heatmap_layer = new HeatmapOverlay(cfg);
+var months = ['Ιαν', 'Φεβ', 'Μαρ', 'Απρ', 'Μαι', 'Ιουν', 'Ιουλ', 'Auγ', 'Σεπ', 'Οκτ', 'Νοε', 'Δεκ']
+var full_months = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος']
+var days = ['Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ', 'Κυρ']
+var full_days = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο', 'Κυριακή']
+var activities = ['Όχημα', 'Ποδήλατο','Με τα πόδια', 'Ακινησία']
+var transport_data = {
+  "Όχημα": {
+    "hour_data": range(1,24),
+    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
+  },
+  "Ποδήλατο": {
+    "hour_data": range(1,24),
+    "day_data":[6, 30, 40, 15, 50, 20, 10, 5],
+  },
+  "Με τα πόδια": {
+    "hour_data": range(1,24),
+    "day_data":[50, 20, 30, 55, 15, 0, 40, 0],
+  },
+  "Ακινησία": {
+    "hour_data": range(1,24),
+    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
+  }
+}
+
+// main window app
 window.app = new Vue({
   el: '#app',
   data: {
@@ -33,11 +34,12 @@ window.app = new Vue({
     last_upload: "10-10-20",
     curr_year: new Date().getFullYear(),
     last_month: full_months[new Date().getMonth()-1],
+    leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"points", label:"Πόντοι"}],
     leaderboard: [
-          { rank: 1, name: 'Leo D.', score: 870},
-          { rank: 2, name: 'Pam B.', score: 790},
-          { rank: 3, name: 'Christos M.', score: 655},
-          { rank: 26, name: 'Ioanna G.', score: 200, _rowVariant: 'info'}
+          { rank: 1, name: 'Leo D.', points: 870},
+          { rank: 2, name: 'Pam B.', points: 790},
+          { rank: 3, name: 'Christos M.', points: 655},
+          { rank: 26, name: 'Ioanna G.', points: 200, _rowVariant: 'primary'}
         ],
     years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the user's records
     months: [{value:null, text: "-"}].concat(months),
@@ -45,7 +47,6 @@ window.app = new Vue({
     to_year: null,
     from_month: null,
     to_month: null,
-    map_data: null
   },
   computed: {
     showYears(){ //generates years for the "to-year" field
@@ -90,43 +91,80 @@ window.app = new Vue({
   methods: {
     showPage(sel_page){
       //hide and show elements
-
       document.getElementById("overview").style.display = "none"
       document.getElementById("analysis").style.display = "none"
       document.getElementById("upload").style.display = "none"
       document.getElementById("dashboard").style.display = "none"
       document.getElementById("map").style.display = "none"
       document.getElementById(sel_page).style.display = "block"
-      if(sel_page=="map"){this.getMapData();admin_heatmap.invalidateSize()} // redraw heatmap to fix resize issue;}
+      if(sel_page=="map"){
+        this.getAdminMapData()
+        admin_heatmap.invalidateSize()// redraw heatmap to fix resize issue;}
+      }
       if(sel_page=="analysis"){user_heatmap.invalidateSize()}; // redraw heatmap to fix resize issue}
     },
-    getStats: function(){
+    getAdminStats(){
         axios.get('db/stats.php')
         .then(function (response) {
-            console.log(response.data);
             app.contacts = response.data;
-
         })
         .catch(function (error) {
             console.log(error);
         });
     },
-    getMapData: function() {
-      axios.get('test.php')
+    getAdminMapData() {
+      axios.get('/db/test.php')
       .then(function (response){
-        map.data = response.data;
-        console.log(map);
-        admin_heatmap_layer.setData(map);
+        admin_heatmap_data.data = response.data;
+        var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
+        admin_heatmap_layer.setData(admin_heatmap_data);
         admin_heatmap.addLayer(admin_heatmap_layer);
       })
     }
   }
 })
 
+// loader app
 window.app = new Vue({
   el: '#loader'
 })
 
+// heatmaps
+var heatmap_cfg = {
+  "radius": 25,
+  "maxOpacity": .8,
+  "scaleRadius": false,
+  "useLocalExtrema": false,
+  latField: 'lat',
+  lngField: 'lng',
+  valueField: 'count'
+};
+
+var user_heatmap_data = { max: 2, data: []}
+var user_heatmap = L.map('user-heatmap', { dragging: !L.Browser.mobile }).setView([38.230462,21.753150], 12);
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    minZoom: 12,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1Ijoiam9hbmdvZyIsImEiOiJja2VpcWJ2NTMyOG00MnNtaWpqejlxYTAwIn0.x3iJFQ5cNLEgBpDTQXfciA',
+    dragging: !L.Browser.mobile
+}).addTo(user_heatmap);
+user_heatmap.scrollWheelZoom.disable();
+
+var admin_heatmap_data = { max: 2, data: []}
+var admin_heatmap = L.map('admin-heatmap', {dragging: !L.Browser.mobile}).setView([38.230462,21.753150], 12);
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    minZoom: 12,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1Ijoid2VicHJvajIwMjAiLCJhIjoiY2tlazRydmlnMHBjMjJ5cGlybnZvM2x5YyJ9.LHhwAHv1LV6kPzfOy4Y3VA',
+}).addTo(admin_heatmap);
+
+//charts
 var progress_canvas = document.getElementById('progress_chart').getContext('2d');
 var progress_chart = new Chart(progress_canvas, {
     type: 'line',
@@ -150,10 +188,10 @@ var ratio_canvas = document.getElementById('ratio_chart');
 var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: ['Vehicle', 'Bicycle','On Foot', 'Still', 'Unknown'],
+      labels: activities,
       datasets: [{
-        backgroundColor: ["#EDA8A7", "#ECE1A5", "#BDEDA5", "#A6EDC9", "#A6D5ED", "#B3A6EE", "#D0A6EE", "#F2BCE0"],
-        data: [10, 20, 30, 15, 15, 0, 0, 0]
+        backgroundColor: ["#EDA8A7", "#ECE1A5", "#BDEDA5", "#A6D5ED"],
+        data: [10, 20, 30, 15]
         }]
     },
     options: {
@@ -178,8 +216,8 @@ var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
           var active_day_points = Math.max.apply(Math,transport_data[label]["day_data"])
           var active_day = full_days[transport_data[label]["day_data"].indexOf(active_day_points)]
           document.getElementById("activity").innerHTML = label
-          document.getElementById("active-hour").innerHTML = "Most active hour: "+active_hour
-          document.getElementById("active-day").innerHTML = "Most active day: "+active_day
+          document.getElementById("active-hour").innerHTML = "Πιο ενεργή ώρα: "+active_hour
+          document.getElementById("active-day").innerHTML = "Πιο ενεργή ημέρα: "+active_day
           hour_chart.data.datasets[0].backgroundColor = color
           hour_chart.data.datasets[0].data = transport_data[label]["hour_data"]
           hour_chart.update()
@@ -243,73 +281,14 @@ var day_chart = new Chart(day_canvas.getContext('2d'), {
     }
 })
 
-var user_heatmap = L.map('user-heatmap', { dragging: !L.Browser.mobile }).setView([38.230462,21.753150], 12);
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    minZoom: 12,
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: 'pk.eyJ1Ijoiam9hbmdvZyIsImEiOiJja2VpcWJ2NTMyOG00MnNtaWpqejlxYTAwIn0.x3iJFQ5cNLEgBpDTQXfciA',
-    dragging: !L.Browser.mobile
-}).addTo(user_heatmap);
-user_heatmap.scrollWheelZoom.disable();
-
-var transport_data = {
-  "Vehicle": {
-    "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
-  },
-  "Bicycle": {
-    "hour_data": range(1,24),
-    "day_data":[6, 30, 40, 15, 50, 20, 10, 5],
-  },
-  "On Foot": {
-    "hour_data": range(1,24),
-    "day_data":[50, 20, 30, 55, 15, 0, 40, 0],
-  },
-  "Walking": {
-    "hour_data": range(1,24),
-    "day_data":[40, 80, 20, 15, 5, 30, 75, 20],
-  },
-  "Running": {
-    "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
-  },
-  "Still": {
-    "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
-  },
-  "Tilting": {
-    "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
-  },
-  "Unknown": {
-    "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
-  }
-}
-
-var admin_heatmap = L.map('admin-heatmap', {dragging: !L.Browser.mobile}).setView([38.2, 21.7], 13);
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    minZoom: 3,
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: 'pk.eyJ1Ijoid2VicHJvajIwMjAiLCJhIjoiY2tlazRydmlnMHBjMjJ5cGlybnZvM2x5YyJ9.LHhwAHv1LV6kPzfOy4Y3VA',
-}).addTo(admin_heatmap);
-admin_heatmap.scrollWheelZoom.disable()
-
-
 var ratio_canvas2 = document.getElementById('ratio_chart2');
 var ratio_chart2 = new Chart(ratio_canvas2.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: ['Όχημα', 'Ποδήλατο','Με τα πόδια', 'Περπάτημα', 'Τρέξιμο', 'Ακινησία', 'Υπο κλίση', 'Άγνωστο'],
+      labels: activities,
       datasets: [{
-        backgroundColor: ["#EDA8A7", "#ECE1A5", "#BDEDA5", "#A6EDC9", "#A6D5ED", "#B3A6EE", "#D0A6EE", "#F2BCE0"],
-        data: [10, 20, 30, 15, 15, 0, 0, 0]
+        backgroundColor: ["#EDA8A7", "#ECE1A5", "#BDEDA5", "#A6D5ED"],
+        data: [20, 20, 30, 15]
         }]
     },
     options: {
@@ -364,7 +343,7 @@ var day_canvas2 = document.getElementById('day_chart2');
 var day_chart2 = new Chart(day_canvas2.getContext('2d'), {
     type: 'bar',
     data: {
-        labels: ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο', 'Κυριακή'],
+        labels: full_days,
         datasets: [{
             label: 'Εγγραφές',
             backgroundColor: '#BDEDA5',
@@ -390,7 +369,7 @@ var month_canvas = document.getElementById('month_chart').getContext('2d');
 var month_chart = new Chart(month_canvas, {
     type: 'line',
     data: {
-      labels: ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος'],
+      labels: full_months,
       datasets: [{
           label: 'Εγγραφές',
           backgroundColor: "#BDEDA5",
@@ -410,7 +389,7 @@ var year_canvas = document.getElementById('year_chart').getContext('2d');
 var year_chart = new Chart(year_canvas, {
     type: 'line',
     data: {
-      labels: ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'],
+      labels: ['2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023'], //we will import only available years from db
       datasets: [{
           label: 'Εγγραφές',
           backgroundColor: "#BDEDA5",

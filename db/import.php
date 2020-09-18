@@ -1,8 +1,8 @@
 <?php
 
-$host = "127.0.0.1";
+$host = "localhost";
 $user = "root";
-$password = "Take@DeepBreath";
+$password = "";
 $dbname = "userdata";
 
 $conn = mysqli_connect($host, $user, $password, $dbname);
@@ -18,10 +18,10 @@ function normalize($type)
 }
 
 function inArea(int $lat, int $lng, $box = [382952000,217055000,382035000,217924000])
-{		
+{
 	if ($lat > $box[0] || $lat < $box[2] || $lng < $box[1] || $lng > $box[3])
 	{
-		return false;	
+		return false;
 	}
 	return true;
 }
@@ -37,7 +37,7 @@ echo (int)inArea(382434000,217310000); // TRUE
 echo (int)inArea(382456000,219346000); // FALSE
 echo (int)inArea(381473000,217361000); // FALSE
 for ($i=0; $i < sizeof($locations) ; $i++) {
-	
+
 	$activity_type = $locations[$i]["activity"][0]["activity"][0]["type"];
 	$latitude = intval($locations[$i]["latitudeE7"]);
 	$longitude = intval($locations[$i]["longitudeE7"]);
@@ -56,7 +56,7 @@ for ($i=0; $i < sizeof($locations) ; $i++) {
 	$activity_timestamp = date("Y-m-d H:i:s",intval($locations[$i]['activity'][0]["timestampMs"]/1000));
 	$activity_confidence =  intval($locations[$i]['activity'][0]['activity'][0]["confidence"]);
 
-	$sql = $conn->query("INSERT INTO record(heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, record_timestamp, userid) VALUES ('$heading', '$activity_type', '$activity_confidence', '$activity_timestamp', '$vertical_accuracy', '$velocity', '$accuracy', '$longitude', '$latitude', '$altitude', '$record_timestamp', 9872)");
+	$sql = $conn->query("INSERT INTO record(heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, record_timestamp, userid) VALUES ('$heading', '$activity_type', '$activity_confidence', '$activity_timestamp', '$vertical_accuracy', '$velocity', '$accuracy', '$longitude', '$latitude', '$altitude', '$record_timestamp', 1)");
 
 	if($sql){
 		echo ".";
@@ -65,6 +65,6 @@ for ($i=0; $i < sizeof($locations) ; $i++) {
 	else{
 		echo "<br> Error:  " . mysqli_error($conn) . "<br>";
 	}
-	$k++; 
+	$k++;
 }
 ?>

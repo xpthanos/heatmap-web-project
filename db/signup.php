@@ -1,38 +1,18 @@
 <?php
 $host = "localhost";
 $user = "root";
-$password = "Take@DeepBreath";
+$password = "";
 $dbname = "userdata";
 
 $conn = mysqli_connect($host, $user, $password, $dbname);
+$input = json_decode(file_get_contents('php://input'),TRUE);
+$userid = rand(1,100000);
+$name = $input['name'];
+$email = $input['email'];
+$password = $input['password'];
+$type = 'user';
 
-$result = array('error'=>false);
-echo $_POST['name'];
-echo $_POST['pass'];
-echo $_POST['email'];
-$randid = rand(1,100000);
-$name = $_POST['name'];
-$pass = $_POST['pass'];
-$email = $_POST['email'];
-$type = 1;
-$sql = $conn->query("INSERT INTO user (userid,username,password,email,type) VALUES('$randid','$name','$pass', '$email', '$type')");
-echo $sql;
-if($sql)
-{
-$users = array();
-while($row = $sql->fetch_assoc()){
-array_push($users, $row);
-}
-$result['users'] = $users;
-}
+$sql = $conn->query("INSERT INTO user (userid,username,password,email,type) VALUES('$userid','$name','$password', '$email', '$type')");
 
-if($sql){
-$result[ 'message'] = "User added successfully!";}
-
-else{
-$result['error'] = true;
-$result['message'] = "Failed to add user!";
-}
-
-echo json_encode($result);
+echo json_encode($sql);
 ?>

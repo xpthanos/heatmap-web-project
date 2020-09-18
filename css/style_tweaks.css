@@ -18,10 +18,10 @@
   display: none;
 }
 .link-style {
-  color: #81e2ed
+  color: rgba(255,255,255,0.5)
 }
 .link-style:hover {
-  color: #c0f1f6;
+  color: rgba(255,255,255,0.8);
   text-decoration: none;
 }
 @media (max-width: 767px) {
