@@ -116,7 +116,15 @@
         </div>
         <!--Upload Page-->
         <div id="upload" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 120px">
-          <p>hello</p>
+          <script type="text/x-template" id="upload-template">
+            <div id="file-drag-drop">
+              <form ref="fileform">
+                <span class="drop-files">Εισάγετε εδώ το αρχείο!</span>
+
+                <progress max="100" :value.prop="uploadPercentage"></progress>
+              </form>
+            </div>
+          </div>
         </div>
         <!--Dashboard Page-->
         <div id="dashboard" class="animate__animated animate__fadeIn"  style="display: none; text-align: center; padding: 20px; padding-top: 120px">
