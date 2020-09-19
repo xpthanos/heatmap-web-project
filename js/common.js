@@ -35,10 +35,20 @@ window.app = new Vue({
     leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"score", label:"Πόντοι"}],
     years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the user's records
     months: [{value:null, text: "-"}].concat(months),
+    days: [{value:null, text:"-"}].concat(full_days),
+    hours: [{value:null, text:"-"},0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
     from_year: null,
     to_year: null,
     from_month: null,
     to_month: null,
+    from_year_admin: null,
+    to_year_admin: null,
+    from_month_admin: null,
+    to_month_admin: null,
+    from_day:null,
+    to_day:null,
+    from_hour:null,
+    to_hour:null,
   },
   created() {
     axios.get('/db/check_user.php')
@@ -110,9 +120,88 @@ window.app = new Vue({
         }
       }
       return after_months
+    },
+      showYearsAdmin(){ //generates years for the "to-year" field
+      if (this.from_year_admin!=null){
+        document.getElementById("to-year-admin").disabled = false
+      }
+      else {
+        document.getElementById("to-year-admin").disabled = true
+        this.to_year_admin=null
+      }
+      if (this.from_year_admin>this.to_year_admin) this.to_year_admin = null
+      var after_years = [{value:null, text: "-"}] //years available after "from-year"
+      for (var year of this.years){
+        if (year!=null) {
+          if (year>this.from_year_admin){
+            after_years.push(year)
+          }
+        }
+      }
+      return after_years
+    },
+    showMonthsAdmin(){ //generates months for the "to-month" field
+      if (this.from_month_admin!=null){
+        document.getElementById("to-month-admin").disabled = false
+      }
+      else {
+        document.getElementById("to-month-admin").disabled = true
+        this.to_month_admin=null
+      }
+      if (this.from_month_admin>this.to_month_admin) this.to_month_admin = null
+      var after_months = [{value:null, text: "-"}] //months available after "from-month"
+      for (var month of this.months){
+        if (month!=null) {
+          if (this.months.indexOf(month)>this.months.indexOf(this.from_month_admin)){
+            after_months.push(month)
+          }
+        }
+      }
+      return after_months
+    },
+    showDays(){ //generates months for the "to-month" field
+      if (this.from_day!=null){
+        document.getElementById("to-day").disabled = false
+      }
+      else {
+        document.getElementById("to-day").disabled = true
+        this.to_day=null
+      }
+      if (this.from_day>this.to_day) this.to_day = null
+      var after_days = [{value:null, text: "-"}] //months available after "from-month"
+      for (var day of this.days){
+        if (day!=null) {
+          if (this.days.indexOf(day)>this.days.indexOf(this.from_day)){
+            after_days.push(day)
+          }
+        }
+      }
+      return after_days
+    },
+    showHours(){ //generates months for the "to-month" field
+      if (this.from_hour!=null){
+        document.getElementById("to-hour").disabled = false
+      }
+      else {
+        document.getElementById("to-hour").disabled = true
+        this.to_hour=null
+      }
+      if (this.from_hour>this.to_hour) this.to_hour = null
+      var after_hours = [{value:null, text: "-"}] //months available after "from-month"
+      for (var hour of this.hours){
+        if (hour!=null) {
+          if (this.hours.indexOf(hour)>this.hours.indexOf(this.from_hour)){
+            after_hours.push(hour)
+          }
+        }
+      }
+      return after_hours
     }
+
+
   },
   methods: {
+
     showTab(sel_tab){
       //hide and show elements
       document.getElementById("overview").style.display = "none"
@@ -475,130 +564,7 @@ var year_chart = new Chart(year_canvas, {
     }
 })
 
-// Vue.component declaration for Upload:
 
-Vue.component('file-upload', {
-  template: '#upload',
-  data(){
-    return {
-      dragAndDropCapable: false,
-      files: [],
-      uploadPercentage: 0
-    }
-  },
-  mounted(){
-    /*
-      Determine if drag and drop functionality is capable in the browser
-    */
-    this.dragAndDropCapable = this.determineDragAndDropCapable();
-
-    /*
-      If drag and drop capable, then we continue to bind events to our elements.
-    */
-    if( this.dragAndDropCapable ){
-      /*
-        Listen to all of the drag events and bind an event listener to each
-        for the fileform.
-      */
-      ['drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop'].forEach( function( evt ) {
-        /*
-          For each event add an event listener that prevents the default action
-          (opening the file in the browser) and stop the propagation of the event (so
-          no other elements open the file in the browser)
-        */
-        this.$refs.fileform.addEventListener(evt, function(e){
-          e.preventDefault();
-          e.stopPropagation();
-        }.bind(this), false);
-      }.bind(this));
-
-      /*
-        Add an event listener for drop to the form
-      */
-      this.$refs.fileform.addEventListener('drop', function(e){
-        /*
-          Capture the files from the drop event and add them to our local files
-          array.
-        */
-        for( let i = 0; i < e.dataTransfer.files.length; i++ ){
-          this.files.push( e.dataTransfer.files[i] );
-        }
-      }.bind(this));
-    }
-  },
-
-  methods: {
-    /*
-      Determines if the drag and drop functionality is in the
-      window
-    */
-    determineDragAndDropCapable(){
-      /*
-        Create a test element to see if certain events
-        are present that let us do drag and drop.
-      */
-      var div = document.createElement('div');
-
-      /*
-        Check to see if the `draggable` event is in the element
-        or the `ondragstart` and `ondrop` events are in the element. If
-        they are, then we have what we need for dragging and dropping files.
-
-        We also check to see if the window has `FormData` and `FileReader` objects
-        present so we can do our AJAX uploading
-      */
-      return ( ( 'draggable' in div )
-              || ( 'ondragstart' in div && 'ondrop' in div ) )
-              && 'FormData' in window
-              && 'FileReader' in window;
-    },
-
-    /*
-      Submits the files to the server
-    */
-    submitFiles(){
-      /*
-        Initialize the form data
-      */
-      let formData = new FormData();
-
-      /*
-        Iteate over any file sent over appending the files
-        to the form data.
-      */
-      for( var i = 0; i < this.files.length; i++ ){
-        let file = this.files[i];
-
-        formData.append('files[' + i + ']', file);
-      }
-
-      /*
-        Make the request to the POST /file-drag-drop-instant URL
-      */
-      axios.post( '/file-drag-drop-instant',
-        formData,
-        {
-          headers: {
-              'Content-Type': 'multipart/form-data'
-          },
-          onUploadProgress: function( progressEvent ) {
-            this.uploadPercentage = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
-          }.bind(this)
-        }
-      ).then(function(){
-        console.log('SUCCESS!!');
-      })
-      .catch(function(){
-        console.log('FAILURE!!');
-      });
-    }
-  }
-}
-)
-
-new Vue({ el: '#upload'})
-
-// Vue.component declaration over
 
 
 

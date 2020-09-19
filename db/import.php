@@ -1,22 +1,22 @@
 <?php
+define("max_distanceE7",1132437);
+define("centerE7",[382304620,217531500]);
+require("../lib/JSON-Machine/JsonMachine.php");
+require("../lib/JSON-Machine/Lexer.php");
+require("../lib/JSON-Machine/Parser.php");
+require("../lib/JSON-Machine/functions.php");
+require("../lib/JSON-Machine/StreamBytes.php");
+require("../lib/JSON-Machine/JsonDecoder/Decoder.php");
+require("../lib/JSON-Machine/JsonDecoder/DecodingResult.php");
+require("../lib/JSON-Machine/JsonDecoder/JsonDecodingTrait.php");
+require("../lib/JSON-Machine/JsonDecoder/ExtJsonDecoder.php");
+require("../lib/JSON-Machine/JsonDecoder/PassThruDecoder.php");
 
-require("lib/JSON-Machine/JsonMachine.php");
-require("lib/JSON-Machine/Lexer.php");
-require("lib/JSON-Machine/Parser.php");
-require("lib/JSON-Machine/functions.php");
-require("lib/JSON-Machine/StreamBytes.php");
-require("lib/JSON-Machine/JsonDecoder/Decoder.php");
-require("lib/JSON-Machine/JsonDecoder/DecodingResult.php");
-require("lib/JSON-Machine/JsonDecoder/JsonDecodingTrait.php");
-require("lib/JSON-Machine/JsonDecoder/ExtJsonDecoder.php");
-
-require("lib/JSON-Machine/JsonDecoder/PassThruDecoder.php");
-
-require("lib/JSON-Machine/StringBytes.php");
-require("lib/JSON-Machine/Exception/SyntaxError.php");
+require("../lib/JSON-Machine/StringBytes.php");
+require("../lib/JSON-Machine/Exception/SyntaxError.php");
 $host = "127.0.0.1";
 $user = "root";
-$password = "";
+$password = "Take@DeepBreath";
 $dbname = "userdata";
 
 $conn = mysqli_connect($host, $user, $password, $dbname);
@@ -25,13 +25,13 @@ function normalize($type)
 {
 	if ($type!="IN_VEHICLE" and $type!="ON_FOOT" and $type!="STILL" and $type!="ON_BICYCLE")
 	{
-		echo "<br>" . $type . "<br>";
+		//echo "<br>" . $type . "<br>";
 		return "STILL";
 	}
 	return $type;
 }
 
-function inArea(int $lat, int $lng, $box = [382952000,217055000,382035000,217924000])
+function constrainArea(int $lat, int $lng, $box)
 {
 	if ($lat > $box[0] || $lat < $box[2] || $lng < $box[1] || $lng > $box[3])
 	{
@@ -40,14 +40,25 @@ function inArea(int $lat, int $lng, $box = [382952000,217055000,382035000,217924
 	return true;
 }
 
-$jsonStream = \JsonMachine\JsonMachine::fromFile("med.json","/locations");
+function inArea(int $latE7, int $lngE7)
+{
+	$x = $latE7-centerE7[0];
+	$y = $lngE7-centerE7[1];
+	if(sqrt(pow($x,2)+pow($y,2)>max_distanceE7)
+	{
+		return false;
+	}
+	return true;
+}
+
+$jsonStream = \JsonMachine\JsonMachine::fromFile("../med.json","/locations");
 foreach ($jsonStream as $name => $data) {
 	$activity_type = $data["activity"][0]["activity"][0]["type"];
 	$latitude = intval($data["latitudeE7"]);
 	$longitude = intval($data["longitudeE7"]);
 	if($activity_type=="UNKNOWN" || is_null($activity_type) || !inArea($latitude,$longitude))
 	{
-		echo "0";
+		//echo "0";
 		continue;
 	}
 	$activity_type = normalize($activity_type);
