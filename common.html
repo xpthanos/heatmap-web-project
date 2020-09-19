@@ -36,12 +36,12 @@
         </b-navbar>
         <!--Overview Page-->
         <div id="overview" class="animate__animated animate__fadeIn"  style="display: none; text-align: center; padding: 20px; padding-top: 120px">
-          <b-row class="pb-2" v-model="username"><h3 class="centered-x">{{username}}</h1></b-row>
+          <b-row class="pb-2"><h3 id="username" class="centered-x">undefined</h1></b-row>
           <b-row class="pb-2"><img class="centered-x" src="img/profile.png" alt="Avatar" style="height: 50%; width: 50%; max-height: 150px; max-width: 150px; border-radius: 50%;"></b-row>
-          <b-row v-model="points"><p v-b-tooltip.hover.right="{variant: 'dark'}" title="Οικολογικοί Πόντοι" class="centered-x" style="font-size: 40px"><img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 5px; margin-right: 10px">{{points}}</p></b-row>
+          <b-row><p id="points" v-b-tooltip.hover.right="{variant: 'dark'}" title="Οικολογικοί Πόντοι" class="centered-x" style="font-size: 40px"><img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 5px; margin-right: 10px">null</p></b-row>
           <b-row class="pb-4" style="max-width: 450px; margin-left: 50%; transform: translateX(-50%);">
-            <b-col md v-model="data_start,data_end"><p><b>Εύρος Δεδομένων:</b><br>{{data_start}} - {{data_end}}</p></b-col>
-            <b-col md v-model="last_upload"><p><b>Τελευταία Καταχώρηση:</b><br>{{last_upload}}</p></b-row>
+            <b-col md><p id="data-start-end"><b>Εύρος Δεδομένων:</b><br>null - null</p></b-col>
+            <b-col md><p id="last-upload"><b>Τελευταία Καταχώρηση:</b><br>null</p></b-row>
           </b-row>
           <hr/>
           <b-row >
@@ -62,7 +62,7 @@
                 <p>{{last_month}} {{curr_year}} <p>
               </div>
               <div style="height: 250px;">
-                <b-table responsive outlined :items="leaderboard" :fields="leaderboard_fields"></b-table>
+                <b-table responsive outlined :items="getLeaderboard" :fields="leaderboard_fields"></b-table>
               </div>
             </b-col>
           </b-row>

@@ -1,44 +1,48 @@
 <?php
 include "config.php";
 
-if(isset($_SESSION['userid'] and isset($SESSION['usertype'])){
+$userid = $_SESSION['userid'];
+$usertype = $_SESSION['usertype'];
+if(isset($userid) and isset($usertype)){
   if($_SESSION['usertype']=='user'){
     //get username
-    $sql = $conc->query("SELECT name,lastname FROM user WHERE userid='$userid'");
+    $sql = $conn->query("SELECT username FROM user WHERE userid='$userid'");
     if($sql){
-      $output['username'] = $sql->fetch_assoc();
+      $output['username'] = $sql->fetch_assoc()['username'];
     }
     //get earliest activity timestamp
-    $sql = $conc->query("SELECT MIN(activity_timestamp) FROM record WHERE userid='$userid'");
+    $sql = $conn->query("SELECT MIN(activity_timestamp) as data_start FROM record WHERE userid='$userid'");
     if($sql){
-      $output['data_start'] = $sql->fetch_assoc();
+      $output['data_start'] = date('Y-m-d',strtotime($sql->fetch_assoc()['data_start']));
     }
     //get latest activity timestamp
-    $sql = $conc->query("SELECT MAX(activity_timestamp) FROM record WHERE userid='$userid'");
+    $sql = $conn->query("SELECT MAX(activity_timestamp) as data_end FROM record WHERE userid='$userid'");
     if($sql){
-      $output['data_end'] = $sql->fetch_assoc();
+      $output['data_end'] = date('Y-m-d',strtotime($sql->fetch_assoc()['data_end']));
     }
     //get latest record timestamp
-    $sql = $conc->query("SELECT MAX(record_timestamp) FROM record WHERE userid='$userid'");
+    $sql = $conn->query("SELECT MAX(record_timestamp) as last_upload FROM record WHERE userid='$userid'");
     if($sql){
-      $output['last_upload'] = $sql->fetch_assoc();
+      $output['last_upload'] = date('Y-m-d',strtotime($sql->fetch_assoc()['last_upload']));
     }
-    //get count of user records with physical acticity
-    $sql = $conc->query("SELECT COUNT(*) FROM record WHERE userid='$userid' AND (activity_type='ON_BICYCLE' OR activity_type='ON_FOOT' OR activity_type='RUNNING' OR activity_type='WALKING')");
+    //get count of user records with physical activity
+    $sql = $conn->query("SELECT COUNT(*) as physical FROM record WHERE userid='$userid' AND (activity_type='ON_BICYCLE' OR activity_type='ON_FOOT' OR activity_type='RUNNING' OR activity_type='WALKING')");
     if($sql){
-      $physical = $sql->fetch_assoc();
+      $physical = $sql->fetch_assoc()['physical'];
     }
-    //get count of user records with vehicle acticity
-    $sql = $conc->query("SELECT COUNT(*) FROM record WHERE userid='$userid' AND activity_type='IN_VEHICLE'");
+    //get count of user records with vehicle activity
+    $sql = $conn->query("SELECT COUNT(*) as vehicle FROM record WHERE userid='$userid' AND activity_type='IN_VEHICLE'");
     if($sql){
-      $vehicle = $sql->fetch_assoc();
+      $vehicle = $sql->fetch_assoc()['vehicle'];
     }
     //calculate score
-    $output['score'] = $physical / $vehicle
-
+    if(intval($vehicle)==0){
+      $output['score'] = 100;
+    }
+    else{
+      $output['score'] = intval(intval($physical) * 100 / intval($vehicle));
+    }
     echo json_encode($output);
   }
 }
-
-echo json_encode($result);
 ?>
