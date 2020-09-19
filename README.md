@@ -8,4 +8,4 @@ Frontend: Bootstrap
 
 Development: AJAX
 
-Backend: MySQL
+Backend: PHP + MySQL
