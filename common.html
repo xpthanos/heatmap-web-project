@@ -156,7 +156,41 @@
           </b-row>
         </div>
         <!--Map Page-->
-        <div id="map" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 120px">
+        <div id="map" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 100px">
+          <b-row>
+            <b-col md>
+              <b-form-group label="Επιλογή έτους:">
+                <b-form-select id="from-year-admin" v-model="from_year_admin" :options="years" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+                <b-form-select id="to-year-admin" disabled v-model="to_year_admin" :options="showYearsAdmin" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+            <b-col md>
+              <b-form-group label="Επιλογή μήνα:">
+                <b-form-select id="from-month-admin" v-model="from_month_admin" :options="months" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+                <b-form-select id="to-month-admin" disabled v-model="to_month_admin" :options="showMonthsAdmin" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+            <b-col md>
+              <b-form-group label="Επιλογή ημέρας:">
+                <b-form-select id="from-day" v-model="from_day" :options="days" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+                <b-form-select id="to-day" disabled v-model="to_day" :options="showDays" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+            <b-col md>
+              <b-form-group label="Επιλογή ώρας:">
+                <b-form-select id="from-hour" v-model="from_hour" :options="hours" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+                <b-form-select id="to-hour" disabled v-model="to_hour" :options="showHours" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
           <div id="admin-heatmap" style= "height: 580px;"></div>
         </div>
       </div>
