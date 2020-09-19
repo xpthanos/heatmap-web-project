@@ -20,25 +20,25 @@
       <!--Main App-->
       <div id="app" style="display: none;">
         <!--Nav Bar-->
-        <b-navbar class="fixed-top" toggleable="sm" type="dark" style="background-color: #24cb7f;">
+        <b-navbar class="fixed-top" toggleable="md" type="dark" style="background-color: #24cb7f;">
           <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-          <b-navbar-brand> anasa</b-navbar-brand>
+          <b-navbar-brand> Ανάσα</b-navbar-brand>
           <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
-              <b-nav-item @click="showPage('overview')">Πρόοδος</b-nav-item>
-              <b-nav-item @click="showPage('analysis')">Ανάλυση</b-nav-item>
-              <b-nav-item @click="showPage('upload')">Καταχώρηση</b-nav-item>
-              <b-nav-item @click="showPage('dashboard')">Επισκόπηση / Κέντρο ελέγχου</b-nav-item>
-              <b-nav-item @click="showPage('map')">Χάρτης</b-nav-item>
+              <b-nav-item id="nav-overview" @click="showTab('overview')">Πρόοδος</b-nav-item>
+              <b-nav-item id="nav-analysis" @click="showTab('analysis')">Ανάλυση</b-nav-item>
+              <b-nav-item id="nav-upload" @click="showTab('upload')">Καταχώρηση</b-nav-item>
+              <b-nav-item id="nav-dashboard" @click="showTab('dashboard')">Κέντρο Eλέγχου</b-nav-item>
+              <b-nav-item id="nav-map" @click="showTab('map')">Χάρτης</b-nav-item>
             </b-navbar-nav>
           </b-collapse>
-          <b-link href="index.html" class="link-style" style="text-align: center; margin-right: 20px;" >Αποσύνδεση</b-link>
+          <b-link @click="logOut()" class="link-style" style="text-align: center; margin-right: 20px;" >Αποσύνδεση</b-link>
         </b-navbar>
         <!--Overview Page-->
-        <div id="overview" class="animate__animated animate__fadeIn"  style="text-align: center; padding: 20px; padding-top: 120px">
+        <div id="overview" class="animate__animated animate__fadeIn"  style="display: none; text-align: center; padding: 20px; padding-top: 120px">
           <b-row class="pb-2" v-model="username"><h3 class="centered-x">{{username}}</h1></b-row>
           <b-row class="pb-2"><img class="centered-x" src="img/profile.png" alt="Avatar" style="height: 50%; width: 50%; max-height: 150px; max-width: 150px; border-radius: 50%;"></b-row>
-          <b-row v-model="points"><p v-b-tooltip.hover.right="{variant: 'dark'}" title="Οικολογικοί Πόντοι" class="centered-x" style="font-size: 40px">{{points}}<img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 10px"></p></b-row>
+          <b-row v-model="points"><p v-b-tooltip.hover.right="{variant: 'dark'}" title="Οικολογικοί Πόντοι" class="centered-x" style="font-size: 40px"><img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 5px; margin-right: 10px">{{points}}</p></b-row>
           <b-row class="pb-4" style="max-width: 450px; margin-left: 50%; transform: translateX(-50%);">
             <b-col md v-model="data_start,data_end"><p><b>Εύρος Δεδομένων:</b><br>{{data_start}} - {{data_end}}</p></b-col>
             <b-col md v-model="last_upload"><p><b>Τελευταία Καταχώρηση:</b><br>{{last_upload}}</p></b-row>

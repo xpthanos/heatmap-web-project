@@ -13,6 +13,14 @@ window.app = new Vue({
     password:'',
     passwordState: null,
   },
+  created() {
+    axios.get('/db/check_user.php')
+    .then(function (response){
+      if(response.data){
+        window.location.href = "common.html"
+      }
+    })
+  },
   computed: {
     firstnameValidate(){
       this.firstnameState = this.firstname.length == 0 ? null : true
@@ -23,7 +31,7 @@ window.app = new Vue({
       return this.lastnameState
     },
     emailValidate(){
-      this.emailState = this.email.length == 0 ? null : /.+[@].+[.].+/.test(this.email)
+      this.emailState = this.email.length == 0 ? null : /\w+[@]\w+[.]\w+/.test(this.email)
       return this.emailState
     },
     passwordValidate() {
@@ -39,7 +47,7 @@ window.app = new Vue({
       axios.post('/db/login.php',{'email': this.login_email, 'password': this.login_password})
       .then(function (response) {
         if (response.data != null){
-          alert("Βρέθηκε λογαριασμός")
+          window.location = 'common.html'
         }
         else{
           alert("Δεν βρέθηκε λογαριασμός")
@@ -64,8 +72,13 @@ window.app = new Vue({
       if (this.firstnameState & this.lastnameState & this.emailState & this.passwordState){
         axios.post('/db/signup.php',{'name': this.firstname+' '+this.lastname, 'email': this.email, 'password':this.password})
         .then(function (response) {
+          if(response.data == true){
             alert("Η εγγραφή σας ολοκληρώθηκε με επιτυχία")
-            location.reload();
+          }
+          else{
+            alert("Η εγγραφή σας απέτυχε λόγω σφάλματος")
+          }
+          location.reload();
         })
         .catch(function (error) {
           console.log(error);

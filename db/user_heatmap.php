@@ -1,10 +1,9 @@
 <?php
 include "config.php";
 
-$sql = $conn->query("SELECT latitude, longitude FROM record");
+$sql = $conn->query("SELECT latitude, longitude FROM record WHERE userid = $_SESSION['userid']");
 $coordinates[] = array();
 if ($sql->num_rows > 0) {
-  // output data of each row
   while($row = $sql->fetch_assoc()) {
   	array_push($coordinates, $row);
   }

@@ -27,11 +27,11 @@ var transport_data = {
 window.app = new Vue({
   el: '#app',
   data: {
-    username: "Ioanna Gogou",
-    points: 200,
-    data_start: "10-10-20",
-    data_end: "10-10-20",
-    last_upload: "10-10-20",
+    username: "<username>",
+    points: 0,
+    data_start: "<start-date>",
+    data_end: "<end-date>",
+    last_upload: "<date>",
     curr_year: new Date().getFullYear(),
     last_month: full_months[new Date().getMonth()-1],
     leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"points", label:"Πόντοι"}],
@@ -47,6 +47,27 @@ window.app = new Vue({
     to_year: null,
     from_month: null,
     to_month: null,
+  },
+  created() {
+    axios.get('/db/check_user.php')
+    .then(function (response){
+      if(response.data){
+        if(response.data == 'user'){
+          document.getElementById('nav-dashboard').style.display = "none"
+          document.getElementById('nav-map').style.display = "none"
+          document.getElementById("overview").style.display = "block"
+        }
+        else if(response.data == 'admin'){
+          document.getElementById('nav-overview').style.display = "none"
+          document.getElementById('nav-analysis').style.display = "none"
+          document.getElementById('nav-upload').style.display = "none"
+          document.getElementById("dashboard").style.display = "block"
+        }
+      }
+      else{
+        window.location.href = "index.html"
+      }
+    })
   },
   computed: {
     showYears(){ //generates years for the "to-year" field
@@ -89,19 +110,43 @@ window.app = new Vue({
     }
   },
   methods: {
-    showPage(sel_page){
+    showTab(sel_tab){
       //hide and show elements
       document.getElementById("overview").style.display = "none"
       document.getElementById("analysis").style.display = "none"
       document.getElementById("upload").style.display = "none"
       document.getElementById("dashboard").style.display = "none"
       document.getElementById("map").style.display = "none"
-      document.getElementById(sel_page).style.display = "block"
-      if(sel_page=="map"){
+      document.getElementById(sel_tab).style.display = "block"
+      if(sel_tab=='overview'){
+      }
+      else if(sel_tab=="map"){
         this.getAdminMapData()
         admin_heatmap.invalidateSize()// redraw heatmap to fix resize issue;}
       }
-      if(sel_page=="analysis"){user_heatmap.invalidateSize()}; // redraw heatmap to fix resize issue}
+      else if(sel_tab=="analysis"){user_heatmap.invalidateSize()}; // redraw heatmap to fix resize issue}
+
+    },
+    getOverviewData() {
+      axios.get('/db/overview.php')
+      .then(function (response){
+        alert(response.data)
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    },
+    getUserMapData() {
+      axios.get('/db/user_heatmap.php')
+      .then(function (response){
+        admin_heatmap_data.data = response.data;
+        var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
+        admin_heatmap_layer.setData(admin_heatmap_data);
+        admin_heatmap.addLayer(admin_heatmap_layer);
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
     },
     getAdminStats(){
         axios.get('db/stats.php')
@@ -120,7 +165,19 @@ window.app = new Vue({
         admin_heatmap_layer.setData(admin_heatmap_data);
         admin_heatmap.addLayer(admin_heatmap_layer);
       })
-    }
+      .catch(function (error) {
+          console.log(error);
+      });
+    },
+    logOut(){
+      axios.get('/db/logout.php')
+      .then(function (response){
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+      window.location = 'index.html'
+    },
   }
 })
 

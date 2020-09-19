@@ -24,10 +24,10 @@
 </head>
 <body onload="hideLoader()">
   <!--Background-->
-  <div class="fixed-bottom fixed-top" style="background-color: #24cb7f;">
+  <div class="fixed-bottom fixed-top" style="background-color: white;">
     <!--Loader-->
-    <div id="loader" class="fixed-bottom fixed-top">
-      <b-spinner variant="light" label="Loading..." style="position: absolute; top: 50%; left: 50%; margin-left:-25px; margin-top:-25px; width: 50px; height: 50px;"></b-spinner>
+    <div id="loader" class="fixed-bottom fixed-top" style="position: absolute; top: 50%; left: 50%; margin-left:-25px; margin-top:-25px;">
+      <b-spinner label="Loading..." style="color: #24cb7f ;width: 50px; height: 50px; width: 50px; height: 50px;"></b-spinner>
     </div>
     <!--Main App-->
     <div id="app" style="display: none">
@@ -65,7 +65,7 @@
           <b-form-group label-cols-sm="3" label="E-mail" label-for="email">
             <b-form-input id="email" v-model="email" type="email" :state="emailValidate" required placeholder=""></b-form-input>
           </b-form-group>
-          <b-form-group label-cols-sm="3" label="Κωδικός" label-for="password" description="Τουλάχιστον 8 χαρακτήρες, ένα κεφαλαίο γράμμα, αριθμός και σύμβολο.">
+          <b-form-group label-cols-sm="3" label="Κωδικός" label-for="password" description="Τουλάχιστον 8 λατινικούς χαρακτήρες, ένα κεφαλαίο γράμμα, αριθμός και σύμβολο.">
             <b-form-input id="password" v-model="password" type="password" :state="passwordValidate" required placeholder=""></b-form-input>
           </b-form-group>
           <hr/>

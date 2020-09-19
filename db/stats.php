@@ -1,10 +1,5 @@
 <?php
-$host = "localhost";
-$user = "root";
-$password = "Take@DeepBreath";
-$dbname = "userdata";
-
-$conn = mysqli_connect($host, $user, $password, $dbname);
+include "config.php";
 
 $sql = $conn->query("SELECT activity_type,COUNT(*) as count
 FROM userdata
