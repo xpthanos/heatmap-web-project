@@ -38,6 +38,7 @@ window.app = new Vue({
     to_hour:null,
     activity_types:['STILL','ON_FOOT','WALKING','RUNNING','ON_BICYCLE','ON_VEHICLE'],
     selected_activities:['STILL','ON_FOOT','WALKING','RUNNING','ON_BICYCLE','ON_VEHICLE'],
+    file: '',
   },
   created() {
     axios.get('/db/check_user.php')
@@ -324,6 +325,28 @@ window.app = new Vue({
     clearDatabase()
     {
       axios.get('/db/delete_all.php')
+    },
+    handleFileUpload()
+    {
+      this.file = this.$refs.file.files[0];
+    },
+    submitFile()
+    {
+      let formData = new FormData();
+      formData.append('file', this.file);
+      axios.post('db/import.php',
+  formData,
+  {
+    headers: {
+        'Content-Type': 'multipart/form-data'
+    }
+  }
+).then(function(response){
+  console.log(response.data);
+})
+.catch(function(){
+ console.log('FAILURE!!');
+});
     },
     logOut(){
       axios.get('/db/logout.php')

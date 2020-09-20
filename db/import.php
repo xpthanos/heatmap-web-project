@@ -16,11 +16,9 @@ require("../lib/JSON-Machine/StringBytes.php");
 require("../lib/JSON-Machine/Exception/SyntaxError.php");
 include "config.php";
 
-$conn = mysqli_connect($host, $user, $password, $dbname);
-
 function normalize($type)
 {
-	if ($type!="IN_VEHICLE" and $type!="ON_FOOT" and $type!="STILL" and $type!="ON_BICYCLE" $type!="RUNNING" $type!="WALKING")
+	if ($type!="IN_VEHICLE" and $type!="ON_FOOT" and $type!="STILL" and $type!="ON_BICYCLE" and $type!="RUNNING" and $type!="WALKING")
 	{
 		//echo "<br>" . $type . "<br>";
 		return "STILL";
@@ -48,7 +46,17 @@ function inArea(int $latE7, int $lngE7)
 	return true;
 }
 
-$jsonStream = \JsonMachine\JsonMachine::fromFile("../med.json","/locations");
+$ds = DIRECTORY_SEPARATOR;  //1
+ 
+$storeFolder = 'uploads';   //2
+if(!empty($_FILES)) {
+    $tempFile = $_FILES['file']['tmp_name'];
+     $targetPath = dirname( __FILE__ ) . $ds. $storeFolder . $ds;  //4   
+    $targetFile =  $targetPath. "new_file.json";  //5
+ 
+    move_uploaded_file($tempFile,$targetFile); //6
+}
+	$jsonStream = \JsonMachine\JsonMachine::fromFile("med.json");
 foreach ($jsonStream as $name => $data) {
 	$activity_type = $data["activity"][0]["activity"][0]["type"];
 	$latitude = intval($data["latitudeE7"]);
