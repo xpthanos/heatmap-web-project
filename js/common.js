@@ -80,6 +80,7 @@ window.app = new Vue({
           document.getElementById("overview").style.display = "block"
           getOverviewData()
           getProgressData()
+          this.getUserMapData()
         }
         else if(response.data == 'admin'){
           document.getElementById('nav-overview').style.display = "none"
@@ -225,6 +226,7 @@ window.app = new Vue({
       else if(sel_tab=="analysis"){
         getUserRatioData()
         getUserActivityData()
+        this.getUserMapData()
         user_heatmap.invalidateSize() // redraw heatmap to fix resize issue}
       }
       else if(sel_tab=="upload"){
@@ -248,10 +250,10 @@ window.app = new Vue({
     getUserMapData() {
       axios.get('/db/user_heatmap.php')
       .then(function (response){
-        admin_heatmap_data.data = response.data;
-        var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
-        admin_heatmap_layer.setData(admin_heatmap_data);
-        admin_heatmap.addLayer(admin_heatmap_layer);
+        user_heatmap_data.data = response.data;
+        var user_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
+        user_heatmap_layer.setData(user_heatmap_data);
+        user_heatmap.addLayer(user_heatmap_layer);
       })
       .catch(function (error) {
           console.log(error);
@@ -293,7 +295,7 @@ var heatmap_cfg = {
   valueField: 'count'
 };
 
-var user_heatmap_data = { max: 2, data: []}
+var user_heatmap_data = { max: 100, data: []}
 var user_heatmap = L.map('user-heatmap', { dragging: !L.Browser.mobile }).setView([38.230462,21.753150], 12);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -315,10 +317,8 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
     zoomOffset: -1,
     accessToken: 'pk.eyJ1Ijoid2VicHJvajIwMjAiLCJhIjoiY2tlazRydmlnMHBjMjJ5cGlybnZvM2x5YyJ9.LHhwAHv1LV6kPzfOy4Y3VA',
 }).addTo(upload_map);
-
 var drawnItems = new L.FeatureGroup();
     upload_map.addLayer(drawnItems);
-
 var drawControl = new L.Control.Draw({
     position: 'topright',
     draw: {
@@ -338,7 +338,6 @@ var drawControl = new L.Control.Draw({
     }
 });
 upload_map.addControl(drawControl);
-
 upload_map.on(L.Draw.Event.CREATED, function (e) {
   var type = e.layerType,
   layer = e.layer;
@@ -431,7 +430,7 @@ var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
           hour_chart.data.datasets[0].data = hour_data[idx]
           hour_chart.update()
           //update most active day
-          var active_day = day_chart.data.labels[indexOfMax(day_data[idx])]
+          var active_day = full_days[indexOfMax(day_data[idx])]
           document.getElementById("active-day").innerHTML = "Πιο ενεργή ημέρα: "+active_day
           //update day chart
           day_chart.data.datasets[0].backgroundColor = color

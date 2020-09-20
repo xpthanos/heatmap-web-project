@@ -15,8 +15,8 @@ $scores[] = array();
 $ranked_users[] = array();
 $leaderboard[] = array();
 
-$userid = 1;
-$usertype = 'user';
+$userid = $_SESSION['userid'];
+$usertype = $_SESSION['usertype'];
 
 if(isset($userid) and isset($usertype)){
 
