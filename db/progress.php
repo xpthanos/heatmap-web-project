@@ -16,14 +16,14 @@ if(isset($userid) and isset($usertype)){
     $start_date = date('Y-m-d H:i:s', strtotime($input['curr_year']."-".$k."-1"));
     $end_date = date('Y-m-d H:i:s', strtotime($input['curr_year']."-".$k."-".(cal_days_in_month(CAL_GREGORIAN, $k, intval($input['curr_year']))-1)));
     //get count of user records with vehicle activity in the specific month
-    $sql = $conn->query("SELECT COUNT(*) as vscore FROM record WHERE activity_type='IN_VEHICLE' AND activity_timestamp>'$start_date' AND activity_timestamp<'$end_date' AND userid='$userid'");
+    $sql = $conn->query("SELECT COUNT(*) as vscore FROM record WHERE activity_type='IN_VEHICLE' AND activity_timestamp>='$start_date' AND activity_timestamp<='$end_date' AND userid='$userid'");
     if($sql){
       while($row = $sql->fetch_assoc()) {
         array_push($vehicle_scores, $row['vscore']);
       }
     }
     //get count of user records with physical activity in the last month
-    $sql = $conn->query("SELECT COUNT(*) as pscore FROM record WHERE (activity_type='ON_BICYCLE' OR activity_type='ON_FOOT' OR activity_type='RUNNING' OR activity_type='WALKING') AND activity_timestamp>'$start_date' AND activity_timestamp<'$end_date' AND userid='$userid'");
+    $sql = $conn->query("SELECT COUNT(*) as pscore FROM record WHERE (activity_type='ON_BICYCLE' OR activity_type='ON_FOOT' OR activity_type='RUNNING' OR activity_type='WALKING') AND activity_timestamp>='$start_date' AND activity_timestamp<='$end_date' AND userid='$userid'");
     if($sql){
       while($row = $sql->fetch_assoc()) {
         array_push($physical_scores, $row['pscore']);
