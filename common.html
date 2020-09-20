@@ -206,14 +206,14 @@
           </b-row>
           <div id="admin-heatmap" style= "height: 580px;"></div>
           <b-row>
-            <b-dropdown split text="Λήψη αρχείου JSON" class="m-2">
-              <b-dropdown-item href="#">Λήψη αρχείου XML</b-dropdown-item>
-              <b-dropdown-item href="#">Λήψη αρχείου CSV</b-dropdown-item>
+            <b-dropdown @click="downloadJSON" split text="Λήψη αρχείου JSON" class="m-2">
+              <b-dropdown-item @click="downloadXML">Λήψη αρχείου XML</b-dropdown-item>
+              <b-dropdown-item @click="downloadCSV">Λήψη αρχείου CSV</b-dropdown-item>
             </b-dropdown>
             <b-button v-b-modal.delete-confirm variant="danger" style="margin: 8px">
               Διαγραφή δεδομένων
             </b-button>
-            <b-modal id="delete-confirm" title="Διαγραφή δεδομένων">
+            <b-modal @ok="clearDatabase" id="delete-confirm" title="Διαγραφή δεδομένων">
               <p class="my-4">Είστε σίγουροι ότι θέλετε να διαγράψετε ΟΛΑ τα δεδομένα από τη βάση; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.</p>
             </b-modal>
           </b-row>
@@ -260,7 +260,8 @@
     <script src="lib/heatmap.min.js"></script>
     <script src="lib/leaflet-heatmap.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="lib/dropzone-5.7.0\dist\dropzone.js"></script>
+    <script src="lib/dropzone-5.7.0/dist/dropzone.js"></script>
+    <script src="lib/xml-js/dist/xml-js.min.js"></script>
     <script src="js/common.js" charset="utf-8"></script>
   </body>
 </html>

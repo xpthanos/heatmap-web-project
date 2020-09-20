@@ -257,21 +257,69 @@ window.app = new Vue({
     },
     downloadJSON()
     {
-
+      axios.get('/db/download.php',
+        {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour, selected: this.selected_activities}})
+      .then(function (response){
+        var output = JSON.stringify(response.data,null, '\t');
+        var fileURL = window.URL.createObjectURL(new Blob([output]));
+        var fileLink = document.createElement('a');
+  
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'file.json');
+        document.body.appendChild(fileLink);
+   
+        fileLink.click();
+      })
+      .catch(function (error) {
+          console.log(error);
+      })
     },
     downloadCSV()
     {
-     /* const items = json3.items
+      /*
+      axios.get('/db/download.php',
+        {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour, selected: this.selected_activities}})
+      .then(function (response){
+        var output = JSON.stringify(response.data,null, '\t');
+        var fileURL = window.URL.createObjectURL(new Blob([output]));
+        var fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'file.json');
+        document.body.appendChild(fileLink);
+   
+        fileLink.click();
+      })
+      .catch(function (error) {
+          console.log(error);
+      })
+      /*const items = json3.items
       const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
       const header = Object.keys(items[0])
       let csv = items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
       csv.unshift(header.join(','))
       csv = csv.join('\r\n')
-      console.log(csv)*/
+      console.log(csv)*/// */
     },
     downloadXML()
     {
-
+      axios.get('/db/download.php',
+        {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour, selected: this.selected_activities}})
+      .then(function (response){
+        var output = JSON.stringify(response.data,null, '\t');
+        var options = {compact: true, spaces: 4};
+        var result = json2xml(output, options); 
+        var fileURL = window.URL.createObjectURL(new Blob([result]));
+        var fileLink = document.createElement('a');
+  
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'file.xml');
+        document.body.appendChild(fileLink);
+   
+        fileLink.click();
+      })
+      .catch(function (error) {
+          console.log(error);
+      })
     },
     clearDatabase()
     {
