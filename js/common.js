@@ -49,7 +49,6 @@ window.app = new Vue({
           document.getElementById("overview").style.display = "block"
           getOverviewData()
           getProgressData()
-          this.getUserMapData()
         }
         else if(response.data == 'admin'){
           document.getElementById('nav-overview').style.display = "none"

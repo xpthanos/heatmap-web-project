@@ -28,8 +28,8 @@ primary key (activity_timestamp,userid),
 constraint by_user foreign key (userid) references user(userid) on delete cascade on update cascade
 );
 
-insert into user values (0,'System Admin','c4ca4238a0b923820dcc509a6f75849b','admin@anasa.gr',0,0,0,'admin');
-insert into user values (1,'Μιχαήλ Σκωτσέζος','c4ca4238a0b923820dcc509a6f75849b','prisonmike@anasa.gr',0,0,0,'user');
-insert into user values (2,'Ιωάννα Γώγου','c4ca4238a0b923820dcc509a6f75849b','ioanna@anasa.gr',0,0,0,'user');
-insert into user values (3,'Χρήστος Μακρής','c4ca4238a0b923820dcc509a6f75849b','makris@anasa.gr',0,0,0,'user');
-insert into user values (4,'Leonardo Dicaprio','c4ca4238a0b923820dcc509a6f75849b','leo@anasa.gr',0,0,0,'user');
+insert into user values (0,'System Admin','c4ca4238a0b923820dcc509a6f75849b','admin@anasa.gr','admin');
+insert into user values (1,'Μιχαήλ Σκωτσέζος','c4ca4238a0b923820dcc509a6f75849b','prisonmike@anasa.gr','user');
+insert into user values (2,'Μαρία Ρήγκου','c4ca4238a0b923820dcc509a6f75849b','maria@anasa.gr','user');
+insert into user values (3,'Χρήστος Μακρής','c4ca4238a0b923820dcc509a6f75849b','makris@anasa.gr','user');
+insert into user values (4,'Leonardo Dicaprio','c4ca4238a0b923820dcc509a6f75849b','leo@anasa.gr','user');
