@@ -4,8 +4,8 @@ include "config.php";
 //$input = json_decode(file_get_contents('php://input'),TRUE);
 //$start_date = date('Y-m-d H:i:s', strtotime($input['curr_year']."-".$input['last_month']."-1"));
 //$end_date = date('Y-m-d H:i:s', strtotime($input['curr_year']."-".$input['last_month']."-".(cal_days_in_month(CAL_GREGORIAN, $input['last_month'], intval($input['curr_year']))-1)));
-$start_date = date('Y-m-d H:i:s', strtotime("2020-2-1")); // for testing
-$end_date = date('Y-m-d H:i:s', strtotime("2020-2-30")); // for testing
+$start_date = date('Y-m-d H:i:s', strtotime("2018-2-1")); // for testing
+$end_date = date('Y-m-d H:i:s', strtotime("2018-2-30")); // for testing
 
 $usernames[] = array();
 $userids[] = array();
@@ -77,5 +77,4 @@ if(isset($userid) and isset($usertype)){
   array_push($leaderboard,$curr_user);
   $leaderboard = array_slice($leaderboard, 1);
 }
-echo json_encode($leaderboard);
 ?>

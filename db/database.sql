@@ -33,3 +33,4 @@ insert into user values (1,'Μιχαήλ Σκωτσέζος','c4ca4238a0b923820d
 insert into user values (2,'Μαρία Ρήγκου','c4ca4238a0b923820dcc509a6f75849b','maria@anasa.gr','user');
 insert into user values (3,'Χρήστος Μακρής','c4ca4238a0b923820dcc509a6f75849b','makris@anasa.gr','user');
 insert into user values (4,'Leonardo Dicaprio','c4ca4238a0b923820dcc509a6f75849b','leo@anasa.gr','user');
+insert into user values (5,'Γιώργος Ψυχογιός','c4ca4238a0b923820dcc509a6f75849b','phyco@anasa.gr','user');

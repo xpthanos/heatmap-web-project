@@ -5,7 +5,8 @@ var days = ['Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ', 'Κυρ'
 var full_days = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο', 'Κυριακή']
 var activities = ['Όχημα', 'Ποδήλατο','Με τα πόδια']
 var activities_SQL = ['IN_VEHICLE', 'ON_BICYCLE','ON_FOOT']
-var curr_year = new Date().getFullYear()
+//var curr_year = 'new Date().getFullYear()'
+var curr_year = 2018 //for testing
 var last_month = full_months[new Date().getMonth()-1]
 
 // loader app
@@ -264,11 +265,11 @@ window.app = new Vue({
         var output = JSON.stringify(response.data,null, '\t');
         var fileURL = window.URL.createObjectURL(new Blob([output]));
         var fileLink = document.createElement('a');
-  
+
         fileLink.href = fileURL;
         fileLink.setAttribute('download', 'file.json');
         document.body.appendChild(fileLink);
-   
+
         fileLink.click();
       })
       .catch(function (error) {
@@ -287,7 +288,7 @@ window.app = new Vue({
         fileLink.href = fileURL;
         fileLink.setAttribute('download', 'file.json');
         document.body.appendChild(fileLink);
-   
+
         fileLink.click();
       })
       .catch(function (error) {
@@ -308,14 +309,14 @@ window.app = new Vue({
       .then(function (response){
         var output = JSON.stringify(response.data,null, '\t');
         var options = {compact: true, spaces: 4};
-        var result = json2xml(output, options); 
+        var result = json2xml(output, options);
         var fileURL = window.URL.createObjectURL(new Blob([result]));
         var fileLink = document.createElement('a');
-  
+
         fileLink.href = fileURL;
         fileLink.setAttribute('download', 'file.xml');
         document.body.appendChild(fileLink);
-   
+
         fileLink.click();
       })
       .catch(function (error) {
