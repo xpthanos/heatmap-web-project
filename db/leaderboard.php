@@ -21,7 +21,7 @@ $usertype = 'user';
 if(isset($userid) and isset($usertype)){
 
   //get usernames
-  $sql = $conn->query("SELECT DISTINCT username,user.userid as user_id FROM user INNER JOIN record on user.userid=record.userid WHERE activity_timestamp>'$start_date' AND activity_timestamp<'$end_date'");
+  $sql = $conn->query("SELECT DISTINCT username,user.userid as user_id FROM user INNER JOIN record on user.userid=record.userid WHERE activity_timestamp>='$start_date' AND activity_timestamp<='$end_date'");
   if($sql){
     while($row = $sql->fetch_assoc()) {
       preg_match ( '/.+[\s]./u' , $row['username'], $matches);
@@ -32,14 +32,14 @@ if(isset($userid) and isset($usertype)){
   $usernames = array_slice($usernames, 1);
   $userids = array_slice($userids, 1);
   //get count of user records with vehicle activity in the last month
-  $sql = $conn->query("SELECT COUNT(*) as vscore FROM record WHERE activity_type='IN_VEHICLE' AND activity_timestamp>'$start_date' AND activity_timestamp<'$end_date' GROUP BY userid");
+  $sql = $conn->query("SELECT COUNT(*) as vscore FROM record WHERE activity_type='IN_VEHICLE' AND activity_timestamp>='$start_date' AND activity_timestamp<='$end_date' GROUP BY userid");
   if($sql){
     while($row = $sql->fetch_assoc()) {
     	array_push($vehicle_scores, $row['vscore']);
     }
   }
   //get count of user records with physical activity in the last month
-  $sql = $conn->query("SELECT COUNT(*) as pscore FROM record WHERE (activity_type='ON_BICYCLE' OR activity_type='ON_FOOT' OR activity_type='RUNNING' OR activity_type='WALKING') AND activity_timestamp>'$start_date' AND activity_timestamp<'$end_date' GROUP BY userid");
+  $sql = $conn->query("SELECT COUNT(*) as pscore FROM record WHERE (activity_type='ON_BICYCLE' OR activity_type='ON_FOOT' OR activity_type='RUNNING' OR activity_type='WALKING') AND activity_timestamp>='$start_date' AND activity_timestamp<='$end_date' GROUP BY userid");
   if($sql){
     while($row = $sql->fetch_assoc()) {
     	array_push($physical_scores, $row['pscore']);

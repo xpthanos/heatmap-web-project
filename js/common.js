@@ -3,27 +3,10 @@ var months = ['Ιαν', 'Φεβ', 'Μαρ', 'Απρ', 'Μαι', 'Ιουν', 'Ι�
 var full_months = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτιος', 'Απρίλιος', 'Μάιος', 'Ιούνιος', 'Ιούλιος', 'Αύγουστος', 'Σεπτέμβριος', 'Οκτώβριος', 'Νοέμβριος', 'Δεκέμβριος']
 var days = ['Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ', 'Κυρ']
 var full_days = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο', 'Κυριακή']
-var activities = ['Όχημα', 'Ποδήλατο','Με τα πόδια', 'Ακινησία']
+var activities = ['Όχημα', 'Ποδήλατο','Με τα πόδια']
+var activities_SQL = ['IN_VEHICLE', 'ON_BICYCLE','ON_FOOT']
 var curr_year = new Date().getFullYear()
 var last_month = full_months[new Date().getMonth()-1]
-var transport_data = {
-  "Όχημα": {
-    "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
-  },
-  "Ποδήλατο": {
-    "hour_data": range(1,24),
-    "day_data":[6, 30, 40, 15, 50, 20, 10, 5],
-  },
-  "Με τα πόδια": {
-    "hour_data": range(1,24),
-    "day_data":[50, 20, 30, 55, 15, 0, 40, 0],
-  },
-  "Ακινησία": {
-    "hour_data": range(1,24),
-    "day_data":[10, 20, 30, 15, 15, 0, 0, 0],
-  }
-}
 
 // loader app
 window.app = new Vue({
@@ -85,7 +68,7 @@ window.app = new Vue({
     from_day:null,
     to_day:null,
     from_hour:null,
-    to_hour:null,
+    to_hour:null
   },
   created() {
     axios.get('/db/check_user.php')
@@ -240,6 +223,8 @@ window.app = new Vue({
         getProgressData()
       }
       else if(sel_tab=="analysis"){
+        getUserRatioData()
+        getUserActivityData()
         user_heatmap.invalidateSize() // redraw heatmap to fix resize issue}
       }
       else if(sel_tab=="upload"){
@@ -406,14 +391,16 @@ var progress_chart = new Chart(progress_canvas, {
       }
     }
 })
+var hour_data = []
+var day_data = []
 var ratio_canvas = document.getElementById('ratio_chart');
 var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
     type: 'doughnut',
     data: {
       labels: activities,
       datasets: [{
-        backgroundColor: ["#EDA8A7", "#ECE1A5", "#BDEDA5", "#A6D5ED"],
-        data: [10, 20, 30, 15]
+        backgroundColor: ["#EDA8A7", "#A6D5ED", "#BDEDA5"],
+        data: []
         }]
     },
     options: {
@@ -431,21 +418,36 @@ var ratio_chart = new Chart(ratio_canvas.getContext('2d'), {
       onHover: function (evt) { //updates hour chart and day chart with data for specific activity
         var element = ratio_chart.getElementsAtEvent(evt)[0]
         if (element) {
-          var label = ratio_chart.data.labels[element._index]
-          var color = ratio_chart.data.datasets[0].backgroundColor[element._index]
-          var active_hour_points = Math.max.apply(Math,transport_data[label]["hour_data"])
-          var active_hour = hour_chart.data.labels[transport_data[label]["hour_data"].indexOf(active_hour_points)]
-          var active_day_points = Math.max.apply(Math,transport_data[label]["day_data"])
-          var active_day = full_days[transport_data[label]["day_data"].indexOf(active_day_points)]
+          var idx = element._index
+          var label = ratio_chart.data.labels[idx]
+          var color = ratio_chart.data.datasets[0].backgroundColor[idx];
+          //update label
           document.getElementById("activity").innerHTML = label
+          //update most active hour
+          var active_hour = hour_chart.data.labels[indexOfMax(hour_data[idx])]
           document.getElementById("active-hour").innerHTML = "Πιο ενεργή ώρα: "+active_hour
-          document.getElementById("active-day").innerHTML = "Πιο ενεργή ημέρα: "+active_day
+          //update hour chart
           hour_chart.data.datasets[0].backgroundColor = color
-          hour_chart.data.datasets[0].data = transport_data[label]["hour_data"]
+          hour_chart.data.datasets[0].data = hour_data[idx]
           hour_chart.update()
+          //update most active day
+          var active_day = day_chart.data.labels[indexOfMax(day_data[idx])]
+          document.getElementById("active-day").innerHTML = "Πιο ενεργή ημέρα: "+active_day
+          //update day chart
           day_chart.data.datasets[0].backgroundColor = color
-          day_chart.data.datasets[0].data = transport_data[label]["day_data"]
+          day_chart.data.datasets[0].data = day_data[idx]
           day_chart.update()
+
+
+          //var active_day_points = Math.max.apply(Math,transport_data[label]["day_data"])
+          //var active_day = full_days[transport_data[label]["day_data"].indexOf(active_day_points)]
+
+          //
+          //document.getElementById("active-day").innerHTML = "Πιο ενεργή ημέρα: "+active_day
+
+          // day_chart.data.datasets[0].backgroundColor = color
+          // day_chart.data.datasets[0].data = transport_data[label]["day_data"]
+          // day_chart.update()
         }
       }
     }
@@ -645,7 +647,6 @@ function getOverviewData() {
       console.log(error);
   });
 }
-
 function getProgressData() {
   axios.post('/db/progress.php',{'curr_year': curr_year})
   .then(function (response){
@@ -655,6 +656,37 @@ function getProgressData() {
   .catch(function (error) {
       console.log(error);
   });
+}
+function getUserRatioData(){
+  axios.get('/db/user_ratio.php')
+  .then(function (response){
+    ratio_chart.data.datasets[0].data = response.data
+    ratio_chart.update()
+  })
+  .catch(function (error) {
+      console.log(error);
+  });
+}
+function getUserActivityData(){
+  for(var i = 0; i < activities_SQL.length; i++){
+    //hour data
+    axios.post('/db/user_hour.php',{'activity': activities_SQL[i]})
+    .then(function (response){
+      hour_data.push(response.data)
+    })
+    .catch(function (error) {
+        console.log(error)
+    })
+    //day data
+    axios.post('/db/user_day.php',{'activity': activities_SQL[i]})
+    .then(function (response){
+      day_data.push(response.data)
+    })
+    .catch(function (error) {
+        console.log(error)
+    })
+  }
+
 }
 function getAdminStats(){
     axios.get('db/stats.php')
@@ -675,8 +707,22 @@ function range(start,end){ //generate array with values from start to end
 }
 function timeRange(){ //generate array with per hour strings
   var array = []
-  for (i=1;i<=24;i++){
+  for (i=0;i<=23;i++){
     array.push(i+":00")
   }
   return array
+}
+function indexOfMax(arr) { // find index of max number of array
+    if (arr.length === 0) {
+        return -1;
+    }
+    var max = arr[0];
+    var maxIndex = 0;
+    for (var i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            maxIndex = i;
+            max = arr[i];
+        }
+    }
+    return maxIndex;
 }
