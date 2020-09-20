@@ -9,7 +9,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css">
     <link rel="stylesheet" href="css/style_tweaks.css">
+<<<<<<< HEAD
     <link rel="stylesheet" href="lib/dropzone-5.7.0\dist\dropzone.css">
+=======
+    <link rel="stylesheet" href="dropzone-5.7.0\dist\dropzone.css">
+    <link rel="stylesheet" href="lib/Leaflet-draw/leaflet.draw.css"/>
+>>>>>>> 6b66d0a2381c8dc5fe944ef8036b982400d3898d
   </head>
   <body onload="hideLoader()">
     <!--Background-->
@@ -73,7 +78,7 @@
           <b-col>
             <b-row style="max-width: 500px; margin-left:50%;transform: translateX(-50%);">
               <b-col md>
-                <b-container><b-form-group label="Επιλογή Χρόνου:"><b-input-group>
+                <b-container><b-form-group label="Επιλογή Έτους:"><b-input-group>
                   <b-form-select id="from-year" v-model="from_year" :options="years" size="sm" style="max-width: 100px; min-width: 75px;"></b-form-select>
                   <p style="margin: auto; padding-left: 6px; padding-right: 6px"> ~ </p>
                   <b-form-select id="to-year" disabled v-model="to_year" :options="showYears" size="sm" style="max-width: 100px; min-width: 75px;"></b-form-select>
@@ -117,7 +122,9 @@
         </div>
         <!--Upload Page-->
         <div id="upload" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 120px">
-          <form action="/file-upload" class="dropzone" id="my-awesome-dropzone"></form>
+          <form action="/file-upload" class="dropzone" id="my-awesome-dropzone">
+            <div id="upload-map" style= "height: 580px;"></div>
+          </form>
         </div>
         <!--Dashboard Page-->
         <div id="dashboard" class="animate__animated animate__fadeIn"  style="display: none; text-align: center; padding: 20px; padding-top: 120px">
@@ -152,34 +159,34 @@
         <div id="map" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 100px">
           <b-row>
             <b-col md>
-              <b-form-group label="Επιλογή έτους:">
-                <b-form-select id="from-year-admin" v-model="from_year_admin" :options="years" size="sm" style="max-width: 100px; min-width: 75px;">
+              <b-form-group label="Επιλογή Έτους:">
+                <b-form-select id="from-year-admin" v-model="from_year_admin" :options="years" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
                 </b-form-select>
-                <b-form-select id="to-year-admin" disabled v-model="to_year_admin" :options="showYearsAdmin" size="sm" style="max-width: 100px; min-width: 75px;">
-                </b-form-select>
-              </b-form-group>
-            </b-col>
-            <b-col md>
-              <b-form-group label="Επιλογή μήνα:">
-                <b-form-select id="from-month-admin" v-model="from_month_admin" :options="months" size="sm" style="max-width: 100px; min-width: 75px;">
-                </b-form-select>
-                <b-form-select id="to-month-admin" disabled v-model="to_month_admin" :options="showMonthsAdmin" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="to-year-admin" disabled v-model="to_year_admin" :options="showYearsAdmin" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
                 </b-form-select>
               </b-form-group>
             </b-col>
             <b-col md>
-              <b-form-group label="Επιλογή ημέρας:">
-                <b-form-select id="from-day" v-model="from_day" :options="days" size="sm" style="max-width: 100px; min-width: 75px;">
+              <b-form-group label="Επιλογή Μήνα:">
+                <b-form-select id="from-month-admin" v-model="from_month_admin" @change="getAdminMapData" :options="months" size="sm" style="max-width: 100px; min-width: 75px;">
                 </b-form-select>
-                <b-form-select id="to-day" disabled v-model="to_day" :options="showDays" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="to-month-admin" disabled v-model="to_month_admin" @change="getAdminMapData" :options="showMonthsAdmin" size="sm" style="max-width: 100px; min-width: 75px;">
                 </b-form-select>
               </b-form-group>
             </b-col>
             <b-col md>
-              <b-form-group label="Επιλογή ώρας:">
-                <b-form-select id="from-hour" v-model="from_hour" :options="hours" size="sm" style="max-width: 100px; min-width: 75px;">
+              <b-form-group label="Επιλογή Ημέρας:">
+                <b-form-select id="from-day" v-model="from_day" :options="days" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
                 </b-form-select>
-                <b-form-select id="to-hour" disabled v-model="to_hour" :options="showHours" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="to-day" disabled v-model="to_day" :options="showDays" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+            <b-col md>
+              <b-form-group label="Επιλογή Ώρας:">
+                <b-form-select id="from-hour" v-model="from_hour" @change="getAdminMapData" :options="hours" size="sm" style="max-width: 100px; min-width: 75px;">
+                </b-form-select>
+                <b-form-select id="to-hour" disabled v-model="to_hour" :options="showHours" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
                 </b-form-select>
               </b-form-group>
             </b-col>
@@ -196,10 +203,44 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js" integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew==" crossorigin=""></script>
+    <script src="lib/Leaflet-draw/Leaflet.draw.js"></script>
+    <script src="lib/Leaflet-draw/Leaflet.Draw.Event.js"></script>
+    <script src="lib/Leaflet-draw/edit/handler/Edit.Poly.js"></script>
+    <script src="lib/Leaflet-draw/edit/handler/Edit.SimpleShape.js"></script>
+    <script src="lib/Leaflet-draw/edit/handler/Edit.Rectangle.js"></script>
+    <script src="lib/Leaflet-draw/edit/handler/Edit.Marker.js"></script>
+    <script src="lib/Leaflet-draw/edit/handler/Edit.CircleMarker.js"></script>
+    <script src="lib/Leaflet-draw/edit/handler/Edit.Circle.js"></script>
+    <script src="lib/Leaflet-draw/draw/handler/Draw.Feature.js"></script>
+    <script src="lib/Leaflet-draw/draw/handler/Draw.Polyline.js"></script>
+    <script src="lib/Leaflet-draw/draw/handler/Draw.Polygon.js"></script>
+    <script src="lib/Leaflet-draw/draw/handler/Draw.SimpleShape.js"></script>
+    <script src="lib/Leaflet-draw/draw/handler/Draw.Rectangle.js"></script>
+    <script src="lib/Leaflet-draw/draw/handler/Draw.Circle.js"></script>
+    <script src="lib/Leaflet-draw/draw/handler/Draw.Marker.js"></script>
+    <script src="lib/Leaflet-draw/draw/handler/Draw.CircleMarker.js"></script>
+    <script src="lib/Leaflet-draw/ext/TouchEvents.js"></script>
+    <script src="lib/Leaflet-draw/ext/LatLngUtil.js"></script>
+    <script src="lib/Leaflet-draw/ext/GeometryUtil.js"></script>
+    <script src="lib/Leaflet-draw/ext/LineUtil.Intersect.js"></script>
+    <script src="lib/Leaflet-draw/ext/Polyline.Intersect.js"></script>
+    <script src="lib/Leaflet-draw/ext/Polygon.Intersect.js"></script>
+    <script src="lib/Leaflet-draw/Control.Draw.js"></script>
+    <script src="lib/Leaflet-draw/Tooltip.js"></script>
+    <script src="lib/Leaflet-draw/Toolbar.js"></script>
+    <script src="lib/Leaflet-draw/draw/DrawToolbar.js"></script>
+    <script src="lib/Leaflet-draw/edit/EditToolbar.js"></script>
+    <script src="lib/Leaflet-draw/edit/handler/EditToolbar.Edit.js"></script>
+    <script src="lib/Leaflet-draw/edit/handler/EditToolbar.Delete.js"></script>
     <script src="lib/heatmap.min.js"></script>
     <script src="lib/leaflet-heatmap.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<<<<<<< HEAD
     <script src="js/common.js" charset="utf-8"></script>
     <script src="/lib/dropzone-5.7.0\dist\dropzone.js"></script>
+=======
+    <script src="dropzone-5.7.0\dist\dropzone.js"></script>
+    <script src="js/common.js" charset="utf-8"></script>
+>>>>>>> 6b66d0a2381c8dc5fe944ef8036b982400d3898d
   </body>
 </html>

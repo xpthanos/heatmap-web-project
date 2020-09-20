@@ -17,7 +17,7 @@ window.app = new Vue({
     axios.get('/db/check_user.php')
     .then(function (response){
       if(response.data){
-        window.location.href = "common.html"
+      window.location.href = "common.html"
       }
     })
   },

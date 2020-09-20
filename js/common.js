@@ -38,9 +38,42 @@ window.app = new Vue({
     last_month: last_month,
     leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"score", label:"Πόντοι"}],
     years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the user's records
-    months: [{value:null, text: "-"}].concat(months),
-    days: [{value:null, text:"-"}].concat(full_days),
-    hours: [{value:null, text:"-"},0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23],
+    months: [{value:null, text: "-"}, { value: 1, text:'Ιαν'}, { value: 2, text:'Φεβ'}, { value: 3, text:'Μαρ'}, { value: 4, text:'Απρ'}, { value: 5, text:'Μαι'}, { value: 6, text:'Ιουν'}, { value: 7, text:'Ιουλ'}, { value: 8, text:'Auγ'}, { value: 9, text:'Σεπ'}, { value: 10, text:'Οκτ'}, {value:11, text:'Νοε'}, { value: 12, text:'Δεκ'}],
+    days: [
+    {value:null, text:"-"},
+    {value:0, text:'Δευ'},
+    {value:1, text:'Τρι'},
+    {value:2, text:'Τετ'},
+    {value:3, text:'Πεμ'},
+    {value:4, text:'Παρ'},
+    {value:5, text:'Σαβ'},
+    {value:6, text:'Κυρ'}],
+    hours: [
+    {value:null, text:"-"},
+    {value:0, text:"0:00"},
+    {value:1, text:"1:00"},
+    {value:2, text:"2:00"},
+    {value:3, text:"3:00"},
+    {value:4, text:"4:00"},
+    {value:5, text:"5:00"},
+    {value:6, text:"6:00"},
+    {value:7, text:"7:00"},
+    {value:8, text:"8:00"},
+    {value:9, text:"9:00"},
+    {value:10, text:"10:00"},
+    {value:11, text:"11:00"},
+    {value:12, text:"12:00"},
+    {value:13, text:"13:00"},
+    {value:14, text:"14:00"},
+    {value:15, text:"15:00"},
+    {value:16, text:"16:00"},
+    {value:17, text:"17:00"},
+    {value:18, text:"18:00"},
+    {value:19, text:"19:00"},
+    {value:20, text:"20:00"},
+    {value:21, text:"21:00"},
+    {value:22, text:"22:00"},
+    {value:23, text:"23:00"}],
     from_year: null,
     to_year: null,
     from_month: null,
@@ -139,8 +172,8 @@ window.app = new Vue({
       if (this.from_month_admin>this.to_month_admin) this.to_month_admin = null
       var after_months = [{value:null, text: "-"}] //months available after "from-month"
       for (var month of this.months){
-        if (month!=null) {
-          if (this.months.indexOf(month)>this.months.indexOf(this.from_month_admin)){
+        if (month["value"]!=null) {
+          if (month["value"]>this.from_month_admin){
             after_months.push(month)
           }
         }
@@ -159,7 +192,7 @@ window.app = new Vue({
       var after_days = [{value:null, text: "-"}] //months available after "from-month"
       for (var day of this.days){
         if (day!=null) {
-          if (this.days.indexOf(day)>this.days.indexOf(this.from_day)){
+          if (day["value"]>this.from_day){
             after_days.push(day)
           }
         }
@@ -178,7 +211,7 @@ window.app = new Vue({
       var after_hours = [{value:null, text: "-"}] //months available after "from-month"
       for (var hour of this.hours){
         if (hour!=null) {
-          if (this.hours.indexOf(hour)>this.hours.indexOf(this.from_hour)){
+          if (hour["value"]>this.from_hour){
             after_hours.push(hour)
           }
         }
@@ -196,6 +229,43 @@ window.app = new Vue({
           console.log(error);
       });
     },
+<<<<<<< HEAD
+=======
+    getUserMapData() {
+      axios.get('/db/user_heatmap.php')
+      .then(function (response){
+        admin_heatmap_data.data = response.data;
+        var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
+        admin_heatmap_layer.setData(admin_heatmap_data);
+        admin_heatmap.addLayer(admin_heatmap_layer);
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    },
+    getAdminStats(){
+        axios.get('db/stats.php')
+        .then(function (response) {
+            app.contacts = response.data;
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    },
+    getAdminMapData() {
+      axios.get('/db/admin_heatmap.php',
+        {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour}})
+      .then(function (response){
+        console.log(response.data);
+        admin_heatmap_data.data = response.data;
+        admin_heatmap_layer.setData(admin_heatmap_data);
+        admin_heatmap.addLayer(admin_heatmap_layer);
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    },
+>>>>>>> 6b66d0a2381c8dc5fe944ef8036b982400d3898d
     logOut(){
       axios.get('/db/logout.php')
       .then(function (response){
@@ -232,8 +302,49 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 }).addTo(user_heatmap);
 user_heatmap.scrollWheelZoom.disable();
 
-var admin_heatmap_data = { max: 2, data: []}
-var admin_heatmap = L.map('admin-heatmap', {dragging: !L.Browser.mobile}).setView([38.230462,21.753150], 12);
+var upload_map = L.map('upload-map', {dragging: !L.Browser.mobile}, {drawControl:true}).setView([38.230462,21.753150], 12);
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    minZoom: 12,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1Ijoid2VicHJvajIwMjAiLCJhIjoiY2tlazRydmlnMHBjMjJ5cGlybnZvM2x5YyJ9.LHhwAHv1LV6kPzfOy4Y3VA',
+}).addTo(upload_map);
+
+var drawnItems = new L.FeatureGroup();
+    upload_map.addLayer(drawnItems);
+
+var drawControl = new L.Control.Draw({
+    position: 'topright',
+    draw: {
+        polyline: false,
+        polygon: false,
+        circle: false,
+        rectangle:{
+          shapeOptions:{
+          color: '#24cb7f',
+        }},
+        marker: false,
+        circlemarker: false
+    },
+    edit: {
+        featureGroup: drawnItems,
+        remove: true
+    }
+});
+upload_map.addControl(drawControl);
+
+upload_map.on(L.Draw.Event.CREATED, function (e) {
+  var type = e.layerType,
+  layer = e.layer;
+  alert(layer.getLatLngs());
+  drawnItems.addLayer(layer);
+});
+
+var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
+var admin_heatmap_data = { max: 100, data: []}
+var admin_heatmap = L.map('admin-heatmap', {dragging: !L.Browser.mobile}, {drawControl:true}).setView([38.230462,21.753150], 12);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
     minZoom: 12,
@@ -516,7 +627,10 @@ function showTab(sel_tab){
   }
   else if(sel_tab=="analysis"){
     user_heatmap.invalidateSize() // redraw heatmap to fix resize issue}
-  } 
+  }
+  else if(sel_tab=="upload"){
+    upload_map.invalidateSize()
+  }
   else if(sel_tab=="map"){
     getAdminMapData()
     admin_heatmap.invalidateSize()// redraw heatmap to fix resize issue;}
@@ -566,19 +680,20 @@ function getAdminStats(){
     })
     .catch(function (error) {
         console.log(error);
-    });
+    })
 }
 function getAdminMapData() {
-  axios.get('/db/test.php')
+  axios.get('/db/admin_heatmap.php',
+    {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour}})
   .then(function (response){
+    console.log(response.data);
     admin_heatmap_data.data = response.data;
-    var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
     admin_heatmap_layer.setData(admin_heatmap_data);
     admin_heatmap.addLayer(admin_heatmap_layer);
   })
   .catch(function (error) {
       console.log(error);
-  });
+  })
 }
 function range(start,end){ //generate array with values from start to end
   var array = []

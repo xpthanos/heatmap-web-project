@@ -44,7 +44,7 @@ function inArea(int $latE7, int $lngE7)
 {
 	$x = $latE7-centerE7[0];
 	$y = $lngE7-centerE7[1];
-	if(sqrt(pow($x,2)+pow($y,2)>max_distanceE7)
+	if(sqrt(pow($x,2)+pow($y,2))>max_distanceE7)
 	{
 		return false;
 	}
@@ -58,7 +58,7 @@ foreach ($jsonStream as $name => $data) {
 	$longitude = intval($data["longitudeE7"]);
 	if($activity_type=="UNKNOWN" || is_null($activity_type) || !inArea($latitude,$longitude))
 	{
-		//echo "0";
+		echo "0";
 		continue;
 	}
 	$activity_type = normalize($activity_type);
@@ -71,7 +71,7 @@ foreach ($jsonStream as $name => $data) {
 	$activity_timestamp = intval($data['activity'][0]["timestampMs"]);
 	$activity_confidence =  intval($data['activity'][0]['activity'][0]["confidence"]);
 
-	$sql = $conn->query("INSERT INTO record(heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, record_timestamp, userid) VALUES ('$heading', '$activity_type', '$activity_confidence', FROM_UNIXTIME(0.001 * '$activity_timestamp'), '$vertical_accuracy', '$velocity', '$accuracy', '$longitude', '$latitude', '$altitude', FROM_UNIXTIME(0.001 * '$record_timestamp'), 9872)");
+	$sql = $conn->query("INSERT INTO record(heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, record_timestamp, userid) VALUES ('$heading', '$activity_type', '$activity_confidence', FROM_UNIXTIME(0.001 * '$activity_timestamp'), '$vertical_accuracy', '$velocity', '$accuracy', '$longitude', '$latitude', '$altitude', FROM_UNIXTIME(0.001 * '$record_timestamp'), 0)");
 
 	if($sql){
 		echo ".";
