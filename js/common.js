@@ -229,43 +229,6 @@ window.app = new Vue({
           console.log(error);
       });
     },
-<<<<<<< HEAD
-=======
-    getUserMapData() {
-      axios.get('/db/user_heatmap.php')
-      .then(function (response){
-        admin_heatmap_data.data = response.data;
-        var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
-        admin_heatmap_layer.setData(admin_heatmap_data);
-        admin_heatmap.addLayer(admin_heatmap_layer);
-      })
-      .catch(function (error) {
-          console.log(error);
-      });
-    },
-    getAdminStats(){
-        axios.get('db/stats.php')
-        .then(function (response) {
-            app.contacts = response.data;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-    },
-    getAdminMapData() {
-      axios.get('/db/admin_heatmap.php',
-        {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour}})
-      .then(function (response){
-        console.log(response.data);
-        admin_heatmap_data.data = response.data;
-        admin_heatmap_layer.setData(admin_heatmap_data);
-        admin_heatmap.addLayer(admin_heatmap_layer);
-      })
-      .catch(function (error) {
-          console.log(error);
-      });
-    },
->>>>>>> 6b66d0a2381c8dc5fe944ef8036b982400d3898d
     logOut(){
       axios.get('/db/logout.php')
       .then(function (response){
