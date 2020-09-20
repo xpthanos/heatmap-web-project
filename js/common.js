@@ -22,41 +22,8 @@ window.app = new Vue({
     leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"score", label:"Πόντοι"}],
     years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the user's records
     months: [{value:null, text: "-"}, { value: 1, text:'Ιαν'}, { value: 2, text:'Φεβ'}, { value: 3, text:'Μαρ'}, { value: 4, text:'Απρ'}, { value: 5, text:'Μαι'}, { value: 6, text:'Ιουν'}, { value: 7, text:'Ιουλ'}, { value: 8, text:'Auγ'}, { value: 9, text:'Σεπ'}, { value: 10, text:'Οκτ'}, {value:11, text:'Νοε'}, { value: 12, text:'Δεκ'}],
-    days: [
-    {value:null, text:"-"},
-    {value:0, text:'Δευ'},
-    {value:1, text:'Τρι'},
-    {value:2, text:'Τετ'},
-    {value:3, text:'Πεμ'},
-    {value:4, text:'Παρ'},
-    {value:5, text:'Σαβ'},
-    {value:6, text:'Κυρ'}],
-    hours: [
-    {value:null, text:"-"},
-    {value:0, text:"0:00"},
-    {value:1, text:"1:00"},
-    {value:2, text:"2:00"},
-    {value:3, text:"3:00"},
-    {value:4, text:"4:00"},
-    {value:5, text:"5:00"},
-    {value:6, text:"6:00"},
-    {value:7, text:"7:00"},
-    {value:8, text:"8:00"},
-    {value:9, text:"9:00"},
-    {value:10, text:"10:00"},
-    {value:11, text:"11:00"},
-    {value:12, text:"12:00"},
-    {value:13, text:"13:00"},
-    {value:14, text:"14:00"},
-    {value:15, text:"15:00"},
-    {value:16, text:"16:00"},
-    {value:17, text:"17:00"},
-    {value:18, text:"18:00"},
-    {value:19, text:"19:00"},
-    {value:20, text:"20:00"},
-    {value:21, text:"21:00"},
-    {value:22, text:"22:00"},
-    {value:23, text:"23:00"}],
+    days: [{value:null, text:"-"}, {value:0, text:'Δευ'}, {value:1, text:'Τρι'}, {value:2, text:'Τετ'}, {value:3, text:'Πεμ'}, {value:4, text:'Παρ'}, {value:5, text:'Σαβ'}, {value:6, text:'Κυρ'}],
+    hours: [{value:null, text:"-"}, {value:0, text:"0:00"}, {value:1, text:"1:00"}, {value:2, text:"2:00"}, {value:3, text:"3:00"}, {value:4, text:"4:00"}, {value:5, text:"5:00"}, {value:6, text:"6:00"}, {value:7, text:"7:00"}, {value:8, text:"8:00"}, {value:9, text:"9:00"}, {value:10, text:"10:00"}, {value:11, text:"11:00"}, {value:12, text:"12:00"}, {value:13, text:"13:00"}, {value:14, text:"14:00"}, {value:15, text:"15:00"}, {value:16, text:"16:00"}, {value:17, text:"17:00"}, {value:18, text:"18:00"}, {value:19, text:"19:00"}, {value:20, text:"20:00"}, {value:21, text:"21:00"}, {value:22, text:"22:00"}, {value:23, text:"23:00"}],
     from_year: null,
     to_year: null,
     from_month: null,
@@ -68,7 +35,9 @@ window.app = new Vue({
     from_day:null,
     to_day:null,
     from_hour:null,
-    to_hour:null
+    to_hour:null,
+    activity_types:['STILL','ON_FOOT','WALKING','RUNNING','ON_BICYCLE','ON_VEHICLE'],
+    selected_activities:['STILL','ON_FOOT','WALKING','RUNNING','ON_BICYCLE','ON_VEHICLE'],
   },
   created() {
     axios.get('/db/check_user.php')
@@ -259,18 +228,55 @@ window.app = new Vue({
           console.log(error);
       });
     },
+    checkActivities()
+    {
+      if(this.selected_activities.length==0)
+      {
+        this.selected_activities=['STILL','ON_FOOT','WALKING','RUNNING','ON_BICYCLE','ON_VEHICLE']
+      }
+      this.getAdminMapData();
+    },
     getAdminMapData() {
       axios.get('/db/admin_heatmap.php',
-        {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour}})
+        {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour, selected: this.selected_activities}})
       .then(function (response){
         console.log(response.data);
+        if(response.data!=null){
         admin_heatmap_data.data = response.data;
         admin_heatmap_layer.setData(admin_heatmap_data);
-        admin_heatmap.addLayer(admin_heatmap_layer);
+        admin_heatmap.addLayer(admin_heatmap_layer);}
+        else
+        {
+          admin_heatmap_data.data = [];
+          admin_heatmap_layer.setData(admin_heatmap_data);
+          admin_heatmap.addLayer(admin_heatmap_layer);
+        }
       })
       .catch(function (error) {
           console.log(error);
       })
+    },
+    downloadJSON()
+    {
+
+    },
+    downloadCSV()
+    {
+     /* const items = json3.items
+      const replacer = (key, value) => value === null ? '' : value // specify how you want to handle null values here
+      const header = Object.keys(items[0])
+      let csv = items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+      csv.unshift(header.join(','))
+      csv = csv.join('\r\n')
+      console.log(csv)*/
+    },
+    downloadXML()
+    {
+
+    },
+    clearDatabase()
+    {
+      axios.get('/db/delete_all.php')
     },
     logOut(){
       axios.get('/db/logout.php')
@@ -299,7 +305,7 @@ var user_heatmap_data = { max: 100, data: []}
 var user_heatmap = L.map('user-heatmap', { dragging: !L.Browser.mobile }).setView([38.230462,21.753150], 12);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    minZoom: 12,
+    minZoom: 13,
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,

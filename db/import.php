@@ -14,16 +14,13 @@ require("../lib/JSON-Machine/JsonDecoder/PassThruDecoder.php");
 
 require("../lib/JSON-Machine/StringBytes.php");
 require("../lib/JSON-Machine/Exception/SyntaxError.php");
-$host = "127.0.0.1";
-$user = "root";
-$password = "Take@DeepBreath";
-$dbname = "userdata";
+include "config.php";
 
 $conn = mysqli_connect($host, $user, $password, $dbname);
 
 function normalize($type)
 {
-	if ($type!="IN_VEHICLE" and $type!="ON_FOOT" and $type!="STILL" and $type!="ON_BICYCLE")
+	if ($type!="IN_VEHICLE" and $type!="ON_FOOT" and $type!="STILL" and $type!="ON_BICYCLE" $type!="RUNNING" $type!="WALKING")
 	{
 		//echo "<br>" . $type . "<br>";
 		return "STILL";
