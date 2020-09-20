@@ -4,6 +4,8 @@ var full_months = ['Ιανουάριος', 'Φεβρουάριος', 'Μάρτι
 var days = ['Δευ', 'Τρι', 'Τετ', 'Πεμ', 'Παρ', 'Σαβ', 'Κυρ']
 var full_days = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή', 'Σάββατο', 'Κυριακή']
 var activities = ['Όχημα', 'Ποδήλατο','Με τα πόδια', 'Ακινησία']
+var curr_year = new Date().getFullYear()
+var last_month = full_months[new Date().getMonth()-1]
 var transport_data = {
   "Όχημα": {
     "hour_data": range(1,24),
@@ -23,15 +25,17 @@ var transport_data = {
   }
 }
 
+// loader app
+window.app = new Vue({
+  el: '#loader'
+})
+
 // main window app
 window.app = new Vue({
   el: '#app',
   data: {
-    data_start: "<start-date>",
-    data_end: "<end-date>",
-    last_upload: "<date>",
-    curr_year: new Date().getFullYear(),
-    last_month: full_months[new Date().getMonth()-1],
+    curr_year: curr_year,
+    last_month: last_month,
     leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"score", label:"Πόντοι"}],
     years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the user's records
     months: [{value:null, text: "-"}].concat(months),
@@ -55,26 +59,10 @@ window.app = new Vue({
     .then(function (response){
       if(response.data){
         if(response.data == 'user'){
-          document.getElementById('nav-dashboard').style.display = "none"
-          document.getElementById('nav-map').style.display = "none"
-          document.getElementById("overview").style.display = "block"
-          axios.get('/db/overview.php')
-          .then(function (response){
-            document.getElementById("username").innerHTML = response.data['username']
-            document.getElementById("points").innerHTML = '<img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 5px; margin-right: 10px">' + response.data['score']
-            document.getElementById("data-start-end").innerHTML = '<b>Εύρος Δεδομένων:</b><br>'+response.data['data_start']+' - '+response.data['data_end']
-            document.getElementById("last-upload").innerHTML = '<b>Τελευταία Καταχώρηση:</b><br>'+response.data['last_upload']
-
-          })
-          .catch(function (error) {
-              console.log(error);
-          });
+          showTab('overview')
         }
         else if(response.data == 'admin'){
-          document.getElementById('nav-overview').style.display = "none"
-          document.getElementById('nav-analysis').style.display = "none"
-          document.getElementById('nav-upload').style.display = "none"
-          document.getElementById("dashboard").style.display = "block"
+          showTab('dashboard')
         }
       }
       else{
@@ -197,75 +185,12 @@ window.app = new Vue({
       }
       return after_hours
     }
-
-
   },
   methods: {
-
-    showTab(sel_tab){
-      //hide and show elements
-      document.getElementById("overview").style.display = "none"
-      document.getElementById("analysis").style.display = "none"
-      document.getElementById("upload").style.display = "none"
-      document.getElementById("dashboard").style.display = "none"
-      document.getElementById("map").style.display = "none"
-      document.getElementById(sel_tab).style.display = "block"
-      if(sel_tab=='overview'){
-        this.getOverview()
-      }
-      else if(sel_tab=="map"){
-        this.getAdminMapData()
-        admin_heatmap.invalidateSize()// redraw heatmap to fix resize issue;}
-      }
-      else if(sel_tab=="analysis"){user_heatmap.invalidateSize()}; // redraw heatmap to fix resize issue}
-
-    },
-    getOverview() {
-      axios.get('/db/overview.php')
-      .then(function (response){
-        this.username = response.data['username']
-      })
-      .catch(function (error) {
-          console.log(error);
-      });
-    },
     getLeaderboard(){
       return axios.post('/db/leaderboard.php',{'last_month': new Date().getMonth()-1, 'curr_year': this.curr_year})
       .then(function (response){
         return response.data || []
-      })
-      .catch(function (error) {
-          console.log(error);
-      });
-    },
-    getUserMapData() {
-      axios.get('/db/user_heatmap.php')
-      .then(function (response){
-        admin_heatmap_data.data = response.data;
-        var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
-        admin_heatmap_layer.setData(admin_heatmap_data);
-        admin_heatmap.addLayer(admin_heatmap_layer);
-      })
-      .catch(function (error) {
-          console.log(error);
-      });
-    },
-    getAdminStats(){
-        axios.get('db/stats.php')
-        .then(function (response) {
-            app.contacts = response.data;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-    },
-    getAdminMapData() {
-      axios.get('/db/test.php')
-      .then(function (response){
-        admin_heatmap_data.data = response.data;
-        var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
-        admin_heatmap_layer.setData(admin_heatmap_data);
-        admin_heatmap.addLayer(admin_heatmap_layer);
       })
       .catch(function (error) {
           console.log(error);
@@ -281,11 +206,6 @@ window.app = new Vue({
       window.location = 'index.html'
     },
   }
-})
-
-// loader app
-window.app = new Vue({
-  el: '#loader'
 })
 
 // heatmaps
@@ -327,20 +247,33 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 var progress_canvas = document.getElementById('progress_chart').getContext('2d');
 var progress_chart = new Chart(progress_canvas, {
     type: 'line',
+    axisX:{
+      maximum: 100,
+      minimum: 0
+     },
     data: {
       labels: months,
       datasets: [{
           label: 'Πόντοι',
           backgroundColor: "rgba(90,152,255,0.2)",
           borderColor: "rgba(90,152,255,1)",
-          data: [0, 10, 5, 2, 20, 30, 45, 20, 14, 40, 30, 10]
+          data: []
       }]
     },
     options: {
       legend: {
         display: false
       },
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero:true,
+                suggestedMin: 0,
+                suggestedMax: 100,
+            }
+        }]
+      }
     }
 })
 var ratio_canvas = document.getElementById('ratio_chart');
@@ -407,7 +340,7 @@ var hour_chart = new Chart(hour_canvas.getContext('2d'), {
       scales: {
         yAxes: [{
             ticks: {
-                beginAtZero:true,
+                beginAtZero:true
             }
         }]
       }
@@ -564,17 +497,89 @@ var year_chart = new Chart(year_canvas, {
     }
 })
 
-
-
-
-
-
 // functions
 function hideLoader(){
   document.getElementById("loader").style.display = "none"
   document.getElementById("app").style.display = "block"
 }
+function showTab(sel_tab){
+  //hide and show elements
+  document.getElementById("overview").style.display = "none"
+  document.getElementById("analysis").style.display = "none"
+  document.getElementById("upload").style.display = "none"
+  document.getElementById("dashboard").style.display = "none"
+  document.getElementById("map").style.display = "none"
+  document.getElementById(sel_tab).style.display = "block"
+  if(sel_tab=='overview'){
+    getOverviewData()
+    getProgressData()
+  }
+  else if(sel_tab=="analysis"){
+    user_heatmap.invalidateSize() // redraw heatmap to fix resize issue}
+  } 
+  else if(sel_tab=="map"){
+    getAdminMapData()
+    admin_heatmap.invalidateSize()// redraw heatmap to fix resize issue;}
+  }
 
+}
+function getOverviewData() {
+  axios.get('/db/overview.php')
+  .then(function (response){
+    document.getElementById("username").innerHTML = response.data['username']
+    document.getElementById("points").innerHTML = '<img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 5px; margin-right: 10px">' + response.data['score']
+    document.getElementById("data-start-end").innerHTML = '<b>Εύρος Δεδομένων:</b><br>'+response.data['data_start']+' - '+response.data['data_end']
+    document.getElementById("last-upload").innerHTML = '<b>Τελευταία Καταχώρηση:</b><br>'+response.data['last_upload']
+    return response.data
+  })
+  .catch(function (error) {
+      console.log(error);
+  });
+}
+
+function getProgressData() {
+  axios.post('/db/progress.php',{'curr_year': curr_year})
+  .then(function (response){
+    progress_chart.data.datasets[0].data = response.data
+    progress_chart.update()
+  })
+  .catch(function (error) {
+      console.log(error);
+  });
+}
+function getUserMapData() {
+  axios.get('/db/user_heatmap.php')
+  .then(function (response){
+    admin_heatmap_data.data = response.data;
+    var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
+    admin_heatmap_layer.setData(admin_heatmap_data);
+    admin_heatmap.addLayer(admin_heatmap_layer);
+  })
+  .catch(function (error) {
+      console.log(error);
+  });
+}
+function getAdminStats(){
+    axios.get('db/stats.php')
+    .then(function (response) {
+        app.contacts = response.data;
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+}
+function getAdminMapData() {
+  axios.get('/db/test.php')
+  .then(function (response){
+    admin_heatmap_data.data = response.data;
+    var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
+    admin_heatmap_layer.setData(admin_heatmap_data);
+    admin_heatmap.addLayer(admin_heatmap_layer);
+  })
+  .catch(function (error) {
+      console.log(error);
+  });
+}
 function range(start,end){ //generate array with values from start to end
   var array = []
   for (i=start;i<=end;i++){
@@ -582,7 +587,6 @@ function range(start,end){ //generate array with values from start to end
   }
   return array
 }
-
 function timeRange(){ //generate array with per hour strings
   var array = []
   for (i=1;i<=24;i++){

@@ -36,11 +36,11 @@ if(isset($userid) and isset($usertype)){
       $vehicle = $sql->fetch_assoc()['vehicle'];
     }
     //calculate score
-    if(intval($vehicle)==0){
-      $output['score'] = 100;
+    if(intval($vehicle==0) and intval($physical)==0){
+      $output['score'] = 0;
     }
     else{
-      $output['score'] = intval(intval($physical) * 100 / intval($vehicle));
+      $output['score'] = intval(intval($physical) * 100 / (intval($vehicle)+intval($physical)));
     }
     echo json_encode($output);
   }

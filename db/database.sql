@@ -6,9 +6,6 @@ userid varchar(100) not null,
 username varchar(50) not null,
 password varchar(50) not null,
 email varchar(50) not null,
-score int default 0,
-physical_score int default 0,
-vehicle_score int default 0,
 type enum('user','admin') not null,
 primary key (userid)
 );
@@ -29,19 +26,6 @@ userid varchar(100) not null,
 primary key (activity_timestamp,userid),
 constraint by_user foreign key (userid) references user(userid) on delete cascade on update cascade
 );
-
-delimiter %
-create trigger calc_score after insert on record
-for each row
-begin
-if new.activity_type = 'IN_VEHICLE' then
-  update user set vehicle_score = vehicle_score + 1 where userid = new.userid ;
-elseif new.activity_type = 'ON_BICYCLE' or new.activity_type = 'ON_FOOT' or new.activity_type = 'RUNNING' or new.activity_type = 'WALKING' then
-  update user set physical_score = physical_score + 1 where userid = new.userid;
-end if;
-update user set score = if(user.vehicle_score = 0,100,user.physical_score*100 / user.vehicle_score) where userid = new.userid ;
-end;%
-delimiter ;
 
 insert into user values (0,'System Admin','c4ca4238a0b923820dcc509a6f75849b','admin@anasa.gr',0,0,0,'admin');
 insert into user values (1,'Μιχαήλ Σκωτσέζος','c4ca4238a0b923820dcc509a6f75849b','prisonmike@anasa.gr',0,0,0,'user');
