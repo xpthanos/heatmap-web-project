@@ -27,20 +27,12 @@ var transport_data = {
 window.app = new Vue({
   el: '#app',
   data: {
-    username: "<username>",
-    points: 0,
     data_start: "<start-date>",
     data_end: "<end-date>",
     last_upload: "<date>",
     curr_year: new Date().getFullYear(),
     last_month: full_months[new Date().getMonth()-1],
-    leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"points", label:"Πόντοι"}],
-    leaderboard: [
-          { rank: 1, name: 'Leo D.', points: 870},
-          { rank: 2, name: 'Pam B.', points: 790},
-          { rank: 3, name: 'Christos M.', points: 655},
-          { rank: 26, name: 'Ioanna G.', points: 200, _rowVariant: 'primary'}
-        ],
+    leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"score", label:"Πόντοι"}],
     years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the user's records
     months: [{value:null, text: "-"}, { value: 1, text:'Ιαν'}, { value: 2, text:'Φεβ'}, { value: 3, text:'Μαρ'}, { value: 4, text:'Απρ'}, { value: 5, text:'Μαι'}, { value: 6, text:'Ιουν'}, { value: 7, text:'Ιουλ'}, { value: 8, text:'Auγ'}, { value: 9, text:'Σεπ'}, { value: 10, text:'Οκτ'}, {value:11, text:'Νοε'}, { value: 12, text:'Δεκ'}],
     days: [
@@ -99,6 +91,17 @@ window.app = new Vue({
           document.getElementById('nav-dashboard').style.display = "none"
           document.getElementById('nav-map').style.display = "none"
           document.getElementById("overview").style.display = "block"
+          axios.get('/db/overview.php')
+          .then(function (response){
+            document.getElementById("username").innerHTML = response.data['username']
+            document.getElementById("points").innerHTML = '<img src="img/leaf.svg" alt="leaves" width="25" style="margin-bottom: 5px; margin-right: 10px">' + response.data['score']
+            document.getElementById("data-start-end").innerHTML = '<b>Εύρος Δεδομένων:</b><br>'+response.data['data_start']+' - '+response.data['data_end']
+            document.getElementById("last-upload").innerHTML = '<b>Τελευταία Καταχώρηση:</b><br>'+response.data['last_upload']
+
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
         }
         else if(response.data == 'admin'){
           document.getElementById('nav-overview').style.display = "none"
@@ -241,6 +244,7 @@ window.app = new Vue({
       document.getElementById("map").style.display = "none"
       document.getElementById(sel_tab).style.display = "block"
       if(sel_tab=='overview'){
+        this.getOverview()
       }
       else if(sel_tab=="map"){
         this.getAdminMapData()
@@ -249,10 +253,19 @@ window.app = new Vue({
       else if(sel_tab=="analysis"){user_heatmap.invalidateSize()} // redraw heatmap to fix resize issue}
       else if(sel_tab=="upload"){upload_map.invalidateSize()};
     },
-    getOverviewData() {
+    getOverview() {
       axios.get('/db/overview.php')
       .then(function (response){
-        alert(response.data)
+        this.username = response.data['username']
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    },
+    getLeaderboard(){
+      return axios.post('/db/leaderboard.php',{'last_month': new Date().getMonth()-1, 'curr_year': this.curr_year})
+      .then(function (response){
+        return response.data || []
       })
       .catch(function (error) {
           console.log(error);
@@ -392,7 +405,7 @@ var progress_chart = new Chart(progress_canvas, {
     data: {
       labels: months,
       datasets: [{
-          label: 'Eco Points',
+          label: 'Πόντοι',
           backgroundColor: "rgba(90,152,255,0.2)",
           borderColor: "rgba(90,152,255,1)",
           data: [0, 10, 5, 2, 20, 30, 45, 20, 14, 40, 30, 10]
@@ -456,7 +469,7 @@ var hour_chart = new Chart(hour_canvas.getContext('2d'), {
     data: {
         labels: timeRange(),
         datasets: [{
-            label: 'Records',
+            label: 'Εγγραφές',
             backgroundColor: '#c7c7c7',
             data: []
         }]
@@ -482,7 +495,7 @@ var day_chart = new Chart(day_canvas.getContext('2d'), {
     data: {
         labels: days,
         datasets: [{
-            label: 'Records',
+            label: 'Εγγραφές',
             backgroundColor: '#c7c7c7',
             data: []
         }]

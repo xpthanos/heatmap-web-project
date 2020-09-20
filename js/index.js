@@ -51,8 +51,6 @@ window.app = new Vue({
         }
         else{
           alert("Δεν βρέθηκε λογαριασμός")
-          document.getElementById('email-field').state = false
-          document.getElementById('pass-field').state = false
         }
       })
       .catch(function (error) {

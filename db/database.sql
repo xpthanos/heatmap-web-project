@@ -40,8 +40,12 @@ if new.activity_type = 'IN_VEHICLE' then
 elseif new.activity_type = 'ON_BICYCLE' or new.activity_type = 'ON_FOOT' or new.activity_type = 'RUNNING' or new.activity_type = 'WALKING' then
   update user set physical_score = physical_score + 1 where userid = new.userid;
 end if;
---update user set user.score = if(user.vehicle_score = 0,user.physical_score,user.physical_score / user.vehicle_score) where userid = new.userid ;
+update user set score = if(user.vehicle_score = 0,100,user.physical_score*100 / user.vehicle_score) where userid = new.userid ;
 end;%
+delimiter ;
 
 insert into user values (0,'System Admin','c4ca4238a0b923820dcc509a6f75849b','admin@anasa.gr',0,0,0,'admin');
 insert into user values (1,'Μιχαήλ Σκωτσέζος','c4ca4238a0b923820dcc509a6f75849b','prisonmike@anasa.gr',0,0,0,'user');
+insert into user values (2,'Ιωάννα Γώγου','c4ca4238a0b923820dcc509a6f75849b','ioanna@anasa.gr',0,0,0,'user');
+insert into user values (3,'Χρήστος Μακρής','c4ca4238a0b923820dcc509a6f75849b','makris@anasa.gr',0,0,0,'user');
+insert into user values (4,'Leonardo Dicaprio','c4ca4238a0b923820dcc509a6f75849b','leo@anasa.gr',0,0,0,'user');

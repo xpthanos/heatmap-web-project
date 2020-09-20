@@ -54,7 +54,7 @@
         </b-container>
       </div>
       <!--Signup Modal Window-->
-      <b-modal id="signup" title="Account Information" @hide="cancel" hide-footer >
+      <b-modal id="signup" title="Πληροφορίες Λογαριασμού" @hide="cancel" hide-footer >
         <b-form @submit.stop.prevent="signUp" @reset="cancel">
           <b-form-group label-cols-sm="3" label="Ονομα" label-for="firstname">
             <b-form-input id="firstname" v-model="firstname" type="text" :state="firstnameValidate" required placeholder=""></b-form-input>
