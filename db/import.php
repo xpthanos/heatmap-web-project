@@ -56,7 +56,7 @@ if(!empty($_FILES)) {
  
     move_uploaded_file($tempFile,$targetFile); //6
 }
-	$jsonStream = \JsonMachine\JsonMachine::fromFile("med.json");
+	$jsonStream = \JsonMachine\JsonMachine::fromFile("uploads/new_file.json","/locations");
 foreach ($jsonStream as $name => $data) {
 	$activity_type = $data["activity"][0]["activity"][0]["type"];
 	$latitude = intval($data["latitudeE7"]);
@@ -76,7 +76,7 @@ foreach ($jsonStream as $name => $data) {
 	$activity_timestamp = intval($data['activity'][0]["timestampMs"]);
 	$activity_confidence =  intval($data['activity'][0]['activity'][0]["confidence"]);
 
-	$sql = $conn->query("INSERT INTO record(heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, record_timestamp, userid) VALUES ('$heading', '$activity_type', '$activity_confidence', FROM_UNIXTIME(0.001 * '$activity_timestamp'), '$vertical_accuracy', '$velocity', '$accuracy', '$longitude', '$latitude', '$altitude', NOW(), 0)");
+	$sql = $conn->query("INSERT INTO record(heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, record_timestamp, userid) VALUES ('$heading', '$activity_type', '$activity_confidence', FROM_UNIXTIME(0.001 * '$activity_timestamp'), '$vertical_accuracy', '$velocity', '$accuracy', '$longitude', '$latitude', '$altitude', FROM_UNIXTIME(0.001 * '$record_timestamp'), 0)");
 
 	if($sql){
 		echo ".";

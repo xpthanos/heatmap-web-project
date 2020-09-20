@@ -119,9 +119,10 @@
         <!--Upload Page-->
         <div id="upload" class="animate__animated animate__fadeIn" style="display: none; text-align: center; padding: 20px; padding-top: 120px">
           <h4 style="text-align: center">Σχεδιάστε τετράγωνα στο χάρτη στις περιοχές για τις οποίες δεν θέλετε να ανεβάσετε δεδομένα τοποθεσίας<br>και στη συνέχεια ανεβάστε το αρχείο .json με τα δεδομένα σας.</h4>
-          <form action="import.php" class="dropzone" id="my-awesome-dropzone">
+          <!--<form action="import.php" class="dropzone" id="my-awesome-dropzone">
             <div id="upload-map" style= "height: 580px;"></div>
-          </form>
+          </form>-->
+          <div id="upload-map" style= "height: 580px;"></div>
           <div class="large-12 medium-12 small-12 cell">
           <label>File
             <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>

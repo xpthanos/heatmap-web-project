@@ -1,5 +1,6 @@
 <?php
-
+define("max_distanceE7",1132437);
+define("centerE7",[382304620,217531500]);
 require("lib/JSON-Machine/JsonMachine.php");
 require("lib/JSON-Machine/Lexer.php");
 require("lib/JSON-Machine/Parser.php");
@@ -14,12 +15,7 @@ require("lib/JSON-Machine/JsonDecoder/PassThruDecoder.php");
 
 require("lib/JSON-Machine/StringBytes.php");
 require("lib/JSON-Machine/Exception/SyntaxError.php");
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "userdata";
-
-$conn = mysqli_connect($host, $user, $password, $dbname);
+include("db/config.php");
 
 function normalize($type)
 {
@@ -31,9 +27,20 @@ function normalize($type)
 	return $type;
 }
 
-function inArea(int $lat, int $lng, $box = [382952000,217055000,382035000,217924000])
+function constrainArea(int $lat, int $lng, $box)
 {
 	if ($lat > $box[0] || $lat < $box[2] || $lng < $box[1] || $lng > $box[3])
+	{
+		return false;
+	}
+	return true;
+}
+
+function inArea(int $latE7, int $lngE7)
+{
+	$x = $latE7-centerE7[0];
+	$y = $lngE7-centerE7[1];
+	if(sqrt(pow($x,2)+pow($y,2))>max_distanceE7)
 	{
 		return false;
 	}
