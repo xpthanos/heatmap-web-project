@@ -1,3 +1,4 @@
+drop database if exists userdata;
 create database userdata;
 use userdata;
 
