@@ -17,6 +17,7 @@ $to = array
 	"hour" => null
 );
 
+
 $from["year"] = $_GET["from_year"];
 $to["year"] = $_GET["to_year"];
 $from["month"] = $_GET["from_month"];
@@ -25,6 +26,8 @@ $from["day"] = $_GET["from_day"];
 $to["day"] = $_GET["to_day"];
 $from["hour"] = $_GET["from_hour"];
 $to["hour"] = $_GET["to_hour"];
+
+$selected = $_GET["selected"];
 
 foreach ($to as $k => &$v) {
 	if($v == null)
@@ -106,7 +109,7 @@ $filter["to"] = $to["year"]."-".$to["month"]."-".$to["day"]." ".$to["hour"].":59
 echo $filter["to"];
 */
 
-$sql = $conn->query("SELECT latitude, longitude FROM record where YEAR(activity_timestamp) >= '".$from["year"]."' AND YEAR(activity_timestamp) <= '".$to["year"]."' AND MONTH(activity_timestamp) >= '".$from["month"]."' AND MONTH(activity_timestamp) <= '".$to["month"]."' AND WEEKDAY(activity_timestamp) >= '".$from["day"]."' AND WEEKDAY(activity_timestamp) <='" .$to["day"]."' AND HOUR(activity_timestamp) >='".$from["hour"]."' AND HOUR(activity_timestamp) <='".$to["hour"]."'");
+$sql = $conn->query("SELECT latitude, longitude FROM record where YEAR(activity_timestamp) >= '".$from["year"]."' AND YEAR(activity_timestamp) <= '".$to["year"]."' AND MONTH(activity_timestamp) >= '".$from["month"]."' AND MONTH(activity_timestamp) <= '".$to["month"]."' AND WEEKDAY(activity_timestamp) >= '".$from["day"]."' AND WEEKDAY(activity_timestamp) <='" .$to["day"]."' AND HOUR(activity_timestamp) >='".$from["hour"]."' AND HOUR(activity_timestamp) <='".$to["hour"]."' AND activity_type IN ('". implode( '\',\'', $selected)."')");
 // OLD MEMORIES // $sql = $conn->query("SELECT latitude, longitude FROM record where activity_timestamp > '".$filter["from"]."' AND activity_timestamp < '".$filter["to"]."'");
 $coordinates[] = array();
 if ($sql->num_rows > 0) {

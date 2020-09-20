@@ -156,38 +156,67 @@
           <b-row>
             <b-col md>
               <b-form-group label="Επιλογή Έτους:">
-                <b-form-select id="from-year-admin" v-model="from_year_admin" :options="years" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="from-year-admin" v-model="from_year_admin" :options="years" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 60px;">
                 </b-form-select>
-                <b-form-select id="to-year-admin" disabled v-model="to_year_admin" :options="showYearsAdmin" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="to-year-admin" disabled v-model="to_year_admin" :options="showYearsAdmin" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 60px;">
                 </b-form-select>
               </b-form-group>
             </b-col>
             <b-col md>
               <b-form-group label="Επιλογή Μήνα:">
-                <b-form-select id="from-month-admin" v-model="from_month_admin" @change="getAdminMapData" :options="months" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="from-month-admin" v-model="from_month_admin" @change="getAdminMapData" :options="months" size="sm" style="max-width: 100px; min-width: 60px;">
                 </b-form-select>
-                <b-form-select id="to-month-admin" disabled v-model="to_month_admin" @change="getAdminMapData" :options="showMonthsAdmin" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="to-month-admin" disabled v-model="to_month_admin" @change="getAdminMapData" :options="showMonthsAdmin" size="sm" style="max-width: 100px; min-width: 60px;">
                 </b-form-select>
               </b-form-group>
             </b-col>
             <b-col md>
               <b-form-group label="Επιλογή Ημέρας:">
-                <b-form-select id="from-day" v-model="from_day" :options="days" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="from-day" v-model="from_day" :options="days" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 60px;">
                 </b-form-select>
-                <b-form-select id="to-day" disabled v-model="to_day" :options="showDays" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="to-day" disabled v-model="to_day" :options="showDays" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 60px;">
                 </b-form-select>
               </b-form-group>
             </b-col>
             <b-col md>
               <b-form-group label="Επιλογή Ώρας:">
-                <b-form-select id="from-hour" v-model="from_hour" @change="getAdminMapData" :options="hours" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="from-hour" v-model="from_hour" @change="getAdminMapData" :options="hours" size="sm" style="max-width: 100px; min-width: 60px;">
                 </b-form-select>
-                <b-form-select id="to-hour" disabled v-model="to_hour" :options="showHours" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 75px;">
+                <b-form-select id="to-hour" disabled v-model="to_hour" :options="showHours" @change="getAdminMapData" size="sm" style="max-width: 100px; min-width: 60px;">
                 </b-form-select>
               </b-form-group>
             </b-col>
+            <b-col md>
+              Είδος δραστηριότητας:
+              <b-dropdown text="Επιλέξτε">
+              <b-dropdown-form @change="checkActivities">
+              <b-form-checkbox-group
+                id="activity-types"
+                v-model="selected_activities"
+                :options="activity_types"
+                name="activity_types"
+                class="ml-4"
+                aria-label="Activity types"
+                stacked
+                switches
+              ></b-form-checkbox-group>
+            </b-dropdown-form>
+          </b-dropdown>
+            </b-col>
           </b-row>
           <div id="admin-heatmap" style= "height: 580px;"></div>
+          <b-row>
+            <b-dropdown split text="Λήψη αρχείου JSON" class="m-2">
+              <b-dropdown-item href="#">Λήψη αρχείου XML</b-dropdown-item>
+              <b-dropdown-item href="#">Λήψη αρχείου CSV</b-dropdown-item>
+            </b-dropdown>
+            <b-button v-b-modal.delete-confirm variant="danger" style="margin: 8px">
+              Διαγραφή δεδομένων
+            </b-button>
+            <b-modal id="delete-confirm" title="Διαγραφή δεδομένων">
+              <p class="my-4">Είστε σίγουροι ότι θέλετε να διαγράψετε ΟΛΑ τα δεδομένα από τη βάση; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.</p>
+            </b-modal>
+          </b-row>
         </div>
       </div>
     </div>
