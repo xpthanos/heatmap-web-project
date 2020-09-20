@@ -70,7 +70,7 @@ window.app = new Vue({
       if (this.firstnameState & this.lastnameState & this.emailState & this.passwordState){
         axios.post('/db/signup.php',{'name': this.firstname+' '+this.lastname, 'email': this.email, 'password':this.password})
         .then(function (response) {
-          if(response.data == true){
+          if(response.data == 'ok'){
             alert("Η εγγραφή σας ολοκληρώθηκε με επιτυχία")
           }
           else{
