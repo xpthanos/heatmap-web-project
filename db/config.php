@@ -1,8 +1,8 @@
 <?php
 session_start();
-$host = "127.0.0.1";
+$host = "localhost";
 $user = "root";
-$password = "Take@DeepBreath";
+$password = "";
 $dbname = "userdata";
 
 $conn = mysqli_connect($host, $user, $password,$dbname);

@@ -92,10 +92,17 @@ window.app = new Vue({
     .then(function (response){
       if(response.data){
         if(response.data == 'user'){
-          showTab('overview')
+          document.getElementById('nav-dashboard').style.display = "none"
+          document.getElementById('nav-map').style.display = "none"
+          document.getElementById("overview").style.display = "block"
+          getOverviewData()
+          getProgressData()
         }
         else if(response.data == 'admin'){
-          showTab('dashboard')
+          document.getElementById('nav-overview').style.display = "none"
+          document.getElementById('nav-analysis').style.display = "none"
+          document.getElementById('nav-upload').style.display = "none"
+          document.getElementById("dashboard").style.display = "block"
         }
       }
       else{
@@ -142,7 +149,7 @@ window.app = new Vue({
       }
       return after_months
     },
-      showYearsAdmin(){ //generates years for the "to-year" field
+    showYearsAdmin(){ //generates years for the "to-year" field
       if (this.from_year_admin!=null){
         document.getElementById("to-year-admin").disabled = false
       }
@@ -220,6 +227,30 @@ window.app = new Vue({
     }
   },
   methods: {
+    showTab(sel_tab){
+      //hide and show elements
+      document.getElementById("overview").style.display = "none"
+      document.getElementById("analysis").style.display = "none"
+      document.getElementById("upload").style.display = "none"
+      document.getElementById("dashboard").style.display = "none"
+      document.getElementById("map").style.display = "none"
+      document.getElementById(sel_tab).style.display = "block"
+      if(sel_tab=='overview'){
+        getOverviewData()
+        getProgressData()
+      }
+      else if(sel_tab=="analysis"){
+        user_heatmap.invalidateSize() // redraw heatmap to fix resize issue}
+      }
+      else if(sel_tab=="upload"){
+        upload_map.invalidateSize()
+      }
+      else if(sel_tab=="map"){
+        this.getAdminMapData()
+        admin_heatmap.invalidateSize()// redraw heatmap to fix resize issue;}
+      }
+
+    },
     getLeaderboard(){
       return axios.post('/db/leaderboard.php',{'last_month': new Date().getMonth()-1, 'curr_year': this.curr_year})
       .then(function (response){
@@ -228,6 +259,31 @@ window.app = new Vue({
       .catch(function (error) {
           console.log(error);
       });
+    },
+    getUserMapData() {
+      axios.get('/db/user_heatmap.php')
+      .then(function (response){
+        admin_heatmap_data.data = response.data;
+        var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
+        admin_heatmap_layer.setData(admin_heatmap_data);
+        admin_heatmap.addLayer(admin_heatmap_layer);
+      })
+      .catch(function (error) {
+          console.log(error);
+      });
+    },
+    getAdminMapData() {
+      axios.get('/db/admin_heatmap.php',
+        {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour}})
+      .then(function (response){
+        console.log(response.data);
+        admin_heatmap_data.data = response.data;
+        admin_heatmap_layer.setData(admin_heatmap_data);
+        admin_heatmap.addLayer(admin_heatmap_layer);
+      })
+      .catch(function (error) {
+          console.log(error);
+      })
     },
     logOut(){
       axios.get('/db/logout.php')
@@ -576,30 +632,6 @@ function hideLoader(){
   document.getElementById("loader").style.display = "none"
   document.getElementById("app").style.display = "block"
 }
-function showTab(sel_tab){
-  //hide and show elements
-  document.getElementById("overview").style.display = "none"
-  document.getElementById("analysis").style.display = "none"
-  document.getElementById("upload").style.display = "none"
-  document.getElementById("dashboard").style.display = "none"
-  document.getElementById("map").style.display = "none"
-  document.getElementById(sel_tab).style.display = "block"
-  if(sel_tab=='overview'){
-    getOverviewData()
-    getProgressData()
-  }
-  else if(sel_tab=="analysis"){
-    user_heatmap.invalidateSize() // redraw heatmap to fix resize issue}
-  }
-  else if(sel_tab=="upload"){
-    upload_map.invalidateSize()
-  }
-  else if(sel_tab=="map"){
-    getAdminMapData()
-    admin_heatmap.invalidateSize()// redraw heatmap to fix resize issue;}
-  }
-
-}
 function getOverviewData() {
   axios.get('/db/overview.php')
   .then(function (response){
@@ -624,18 +656,6 @@ function getProgressData() {
       console.log(error);
   });
 }
-function getUserMapData() {
-  axios.get('/db/user_heatmap.php')
-  .then(function (response){
-    admin_heatmap_data.data = response.data;
-    var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
-    admin_heatmap_layer.setData(admin_heatmap_data);
-    admin_heatmap.addLayer(admin_heatmap_layer);
-  })
-  .catch(function (error) {
-      console.log(error);
-  });
-}
 function getAdminStats(){
     axios.get('db/stats.php')
     .then(function (response) {
@@ -645,19 +665,7 @@ function getAdminStats(){
         console.log(error);
     })
 }
-function getAdminMapData() {
-  axios.get('/db/admin_heatmap.php',
-    {params: { from_year: this.from_year_admin, to_year: this.to_year_admin, from_month: this.from_month_admin, to_month:this.to_month_admin, from_day: this.from_day, to_day: this.to_day, from_hour:this.from_hour, to_hour:this.to_hour}})
-  .then(function (response){
-    console.log(response.data);
-    admin_heatmap_data.data = response.data;
-    admin_heatmap_layer.setData(admin_heatmap_data);
-    admin_heatmap.addLayer(admin_heatmap_layer);
-  })
-  .catch(function (error) {
-      console.log(error);
-  })
-}
+
 function range(start,end){ //generate array with values from start to end
   var array = []
   for (i=start;i<=end;i++){
