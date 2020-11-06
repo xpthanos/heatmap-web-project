@@ -21,6 +21,7 @@ window.app = new Vue({
     curr_year: curr_year,
     last_month: last_month,
     leaderboard_fields: [{key:"rank", label:"Θέση"},{key:"name", label:"Όνομα"},{key:"score", label:"Πόντοι"}],
+    record_labels: [{key:"first_name", label:"Όνομα"},{key:"records", label:"Εγγραφές"}],
     years: [{value:null, text: "-"},2016,2017,2018,2019,2020], // they will be imported from database based on the user's records
     months: [{value:null, text: "-"}, { value: 1, text:'Ιαν'}, { value: 2, text:'Φεβ'}, { value: 3, text:'Μαρ'}, { value: 4, text:'Απρ'}, { value: 5, text:'Μαι'}, { value: 6, text:'Ιουν'}, { value: 7, text:'Ιουλ'}, { value: 8, text:'Auγ'}, { value: 9, text:'Σεπ'}, { value: 10, text:'Οκτ'}, {value:11, text:'Νοε'}, { value: 12, text:'Δεκ'}],
     days: [{value:null, text:"-"}, {value:0, text:'Δευ'}, {value:1, text:'Τρι'}, {value:2, text:'Τετ'}, {value:3, text:'Πεμ'}, {value:4, text:'Παρ'}, {value:5, text:'Σαβ'}, {value:6, text:'Κυρ'}],
@@ -257,6 +258,14 @@ window.app = new Vue({
           console.log(error);
       })
     },
+    getUserRecords()
+    {
+      $records= [{first_name: 'Μιχαήλ Σ.', records: 40 },
+          {first_name: 'Μαρία Ρ.' , records: 30},
+          {first_name: 'Χρήστος Μ.', records: 20  },
+          {first_name: 'Leonardo D.', records: 10}]
+          return $records;
+    },
     downloadJSON()
     {
       axios.get('/db/download.php',
@@ -423,11 +432,11 @@ upload_map.on(L.Draw.Event.CREATED, function (e) {
 });
 
 var admin_heatmap_layer = new HeatmapOverlay(heatmap_cfg);
-var admin_heatmap_data = { max: 100, data: []}
+var admin_heatmap_data = { max: 10, data: []}
 var admin_heatmap = L.map('admin-heatmap', {dragging: !L.Browser.mobile}, {drawControl:true}).setView([38.230462,21.753150], 12);
 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    minZoom: 12,
+    minZoom: 13,
     id: 'mapbox/streets-v11',
     tileSize: 512,
     zoomOffset: -1,

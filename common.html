@@ -46,7 +46,7 @@
             <b-col md><p id="last-upload"><b>Τελευταία Καταχώρηση:</b><br>null</p></b-row>
           </b-row>
           <hr/>
-          <b-row >
+          <b-row>
             <b-col  v-model="curr_year">
               <div class="align-left-pc">
                 <h3>Οικολογική Πρόοδος</h3>
@@ -132,10 +132,18 @@
         </div>
         <!--Dashboard Page-->
         <div id="dashboard" class="animate__animated animate__fadeIn"  style="display: none; text-align: center; padding: 20px; padding-top: 120px">
+          <b-row>
+          <b-col md>
           <h3>Εγγραφές ανά δραστηριότητα:</h3>
           <h3 id="activity">~</h3>
-          <b-col md>
+          
             <div style="height: 180px;"><canvas id="ratio_chart2"></canvas></div>
+          </b-col>
+          <b-col md>
+            <b-table striped hover :items="getUserRecords" :fields="record_labels">
+
+            </b-table>
+          </b-row>
           </b-col>
           <hr/>
           <b-row>
@@ -222,7 +230,7 @@
               Διαγραφή δεδομένων
             </b-button>
             <b-modal @ok="clearDatabase" id="delete-confirm" title="Διαγραφή δεδομένων">
-              <p class="my-4">Είστε σίγουροι ότι θέλετε να διαγράψετε ΟΛΑ τα δεδομένα από τη βάση; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.</p>
+              <p class="my-4">Είστε σίγουροι ότι θέλετε να διαγράψετε ΟΛΑ τα δεδομένα τοποθεσίας από τη βάση; Αυτή η ενέργεια δεν μπορεί να αναιρεθεί.</p>
             </b-modal>
           </b-row>
         </div>
