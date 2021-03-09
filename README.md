@@ -1,11 +1,12 @@
-heatmap-web-project
-===================
+<p align="center">
+  <img src="/img/logo.svg" width="300">
+</p>
+<p align="center">
+  anasa is a prototype of a web app for promoting green and healthy city transportations.
+</p>
 
-### Anasa
 
-A prototype for a web app that could be used for promoting green and healthy city transportations.
-
-Short Description
+## Short Description
 -----------------
 
 ### User
